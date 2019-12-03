@@ -14,7 +14,7 @@ export default class Block {
         this.transactions.push(transaction);
     }
 
-    setHash(): String {
+    setHash(): string {
         return createHash('SHA256').update(JSON.stringify(this.transactions)).digest('hex');
     }
 }

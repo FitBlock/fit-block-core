@@ -1,9 +1,10 @@
 import Block from './block'
 export default abstract class AppBase{
-    name: String;
+    name: string;
     godBlock: Block;
-    abstract genPrivateKeyByString(data: String): String;
-    abstract genPrivateKeyByRand(): String;
-    abstract getPublicKeyByPrivateKey(privateKey: String): String;
-    abstract getWalletAdressByPublicKey(publicKey: String): String
+    abstract genPrivateKeyByString(data: string): string;
+    abstract genPrivateKeyByRand(): string;
+    abstract getPublicKeyByPrivateKey(privateKey: string): string;
+    abstract getWalletAdressByPublicKey(publicKey: string): string;
+    abstract getPublicKeyByWalletAdress(walletAdress: string): string;
 } 

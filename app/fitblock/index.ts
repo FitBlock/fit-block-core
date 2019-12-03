@@ -1,25 +1,29 @@
-import BKG from 'bitcoin-key-generator';
+import {createHash} from 'crypto';
+import {hex2Base58, base582Hex} from './util';
+import ecdsa from 'ecdsa-secp256k1';
 import Block from '../../types/block'
 import AppBase from '../../types/appBase';
 export default class FitBlock extends AppBase {
-    name: String;
+    name: string;
     godBlock: Block;
     constructor() {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
     }
-    genPrivateKeyByString(data: String): String {
-        return BKG.getPrivteKeyByOrigin(BKG.getPrivteOriginKeyByStr(data));
+    genPrivateKeyByString(data: string): string {
+        return createHash('sha256').update(data).digest('hex');
     }
-
-    genPrivateKeyByRand(): String {
-        return BKG.getPrivteKeyByOrigin(BKG.getPrivteOriginKeyByRand());
+    genPrivateKeyByRand(): string {
+        return ecdsa.randPrivateKeyNum().toString(16);;
     }
-    getPublicKeyByPrivateKey(privateKey: String): String {
-        return BKG.getPublicOriginKey(BKG.getPrivteOriginKeyByKey(privateKey));
+    getPublicKeyByPrivateKey(privateKey: string): string {
+        return ecdsa.publicKeyPoint2HexStr(ecdsa.getPublicKeyPoint(privateKey));
     }
-    getWalletAdressByPublicKey(publicKey: String): String {
-        return BKG.getPublicKeyByOrigin(publicKey);
+    getWalletAdressByPublicKey(publicKey: string): string {
+        return hex2Base58(publicKey);
+    }
+    getPublicKeyByWalletAdress(walletAdress: string): string {
+        return base582Hex(walletAdress);
     }
 }
