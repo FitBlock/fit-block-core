@@ -5,7 +5,7 @@
     },
     "include": [
         "index.ts",
-        "appBase.ts",
+        "types/appBase.ts",
         "appFactory.ts",
         "app/**/*"
     ],

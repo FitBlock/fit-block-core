@@ -1,4 +1,4 @@
-import AppBase from './appBase';
+import AppBase from './types/appBase';
 import fitblock from './app/fitblock';
 const classMap = {fitblock};
 const instanceMap: Map<String, AppBase> = new Map(); 

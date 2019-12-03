@@ -1,10 +1,13 @@
 import BKG from 'bitcoin-key-generator';
-import AppBase from '../../appBase';
+import Block from '../../types/block'
+import AppBase from '../../types/appBase';
 export default class FitBlock extends AppBase {
     name: String;
+    godBlock: Block;
     constructor() {
         super();
         this.name = 'fitblock';
+        this.godBlock = new Block();
     }
     genPrivateKeyByString(data: String): String {
         return BKG.getPrivteKeyByOrigin(BKG.getPrivteOriginKeyByStr(data));
