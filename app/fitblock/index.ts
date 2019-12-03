@@ -1,7 +1,7 @@
 import BKG from 'bitcoin-key-generator';
 import AppBase from '../../appBase';
 export default class FitBlock extends AppBase {
-    name: string;
+    name: String;
     constructor() {
         super();
         this.name = 'fitblock';

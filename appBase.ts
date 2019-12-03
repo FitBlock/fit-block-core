@@ -1,5 +1,5 @@
 export default abstract class AppBase{
-    name: string;
+    name: String;
     abstract genPrivateKeyByString(data: String): String;
     abstract genPrivateKeyByRand(): String;
     abstract getPublicKeyByPrivateKey(privateKey: String): String;
