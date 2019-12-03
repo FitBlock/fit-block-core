@@ -4,6 +4,7 @@
         "outDir": "./build/",
     },
     "include": [
+        "index.ts",
         "appBase.ts",
         "appFactory.ts",
         "app/**/*"
