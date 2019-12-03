@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "lib": [ "es2015" ],
+        "outFile": "./build/dist.js",
+    },
+    "include": [
+        "appBase.ts",
+        "appFactory.ts",
+        "app/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+    ]
+}

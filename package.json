@@ -1,0 +1,33 @@
+{
+  "name": "fit-block-core",
+  "version": "1.0.0",
+  "description": "Stand-alone version of the block program。",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FitBlock/fit-block-core.git"
+  },
+  "keywords": [
+    "fit",
+    "block",
+    "fit-block",
+    "bitcoin",
+    "btc"
+  ],
+  "author": "zy445566",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FitBlock/fit-block-core/issues"
+  },
+  "homepage": "https://github.com/FitBlock/fit-block-core#readme",
+  "dependencies": {
+    "bitcoin-key-generator": "^1.0.4",
+    "ecdsa-secp256k1": "^1.0.5"
+  }
+}
