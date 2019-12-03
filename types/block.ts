@@ -2,15 +2,15 @@ import {createHash} from 'crypto';
 export default class Block {
     timestamp:Number;
     transactions:Array<String>;
-    prevBlockHash:String;
-    hash:String;
-    nNonce:String;
+    prevBlockHash: string;
+    hash: string;
+    nNonce: string;
     constructor () {
         this.timestamp = new Date().getTime();
         this.transactions = [];
     }
     
-    addTransaction(transaction:String) {
+    addTransaction(transaction: string) {
         this.transactions.push(transaction);
     }
 
