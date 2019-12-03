@@ -1,11 +1,13 @@
 import AppBase from './appBase';
+import fitblock from './app/fitblock';
+const classMap = {fitblock};
 const instanceMap: Map<String, AppBase> = new Map(); 
 export default class AppFactory {
-    static async getAppByName(name: String): Promise<AppBase> {
+    static getAppByName(name: String): AppBase {
         if(instanceMap.has(name)) {
             return instanceMap.get(name);
         }
-        const appObj:AppBase = await import(`./app/${name.toLowerCase()}`);
+        const appObj:AppBase = new classMap[name.toLowerCase()]();
         instanceMap.set(name, appObj);
         return appObj;
     }
