@@ -1,9 +1,8 @@
 import {createHash} from 'crypto';
 import {hex2Base58, base582Hex} from './util';
-import ecdsa from 'ecdsa-secp256k1';
-import Block from './block';
-import Transaction from './transaction';
-import AppBase from '../../types/AppBase';
+import ecdsa from './node_modules/ecdsa-secp256k1';
+import Block from './block'
+import AppBase from '../AppBase';
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
@@ -27,20 +26,5 @@ export default class FitBlock extends AppBase {
     }
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
-    }
-    //  优先同步区块，传播未成块的交易数据
-    sendTransaction():Transaction {
-        return new Transaction();
-    }
-    acceptTransaction(transaction:Transaction):Transaction {
-        return new Transaction();
-    }
-    // 通过区块hash值发送区块
-    sendBlockByHash(blockHash: string): Block {
-        return new Block();
-    }
-    // 接收区块数据,并标记在块中已交易的交易数据为交易成功
-    acceptBlock(block: Block): string {
-        return '';
     }
 }

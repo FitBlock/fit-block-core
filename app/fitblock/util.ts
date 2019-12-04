@@ -10,7 +10,7 @@ const base58KeysObject = {
 const base58Keys = Object.keys(base58KeysObject);
 const base58Len = 58n;
 
-exports.hex2Base58 = function hex2Base58(hexNum)
+export function hex2Base58(hexNum)
 {
     let base58NumArray =[];
     let bigHexNumber = BigInt(`0x${hexNum}`);
@@ -23,7 +23,7 @@ exports.hex2Base58 = function hex2Base58(hexNum)
     return base58NumArray.join("");
 }
 
-exports.base582Hex = function base582Hex(base58Num)
+export function base582Hex(base58Num)
 {
     let base58NumArray =base58Num.split("");
     let big58Number = 0n;
