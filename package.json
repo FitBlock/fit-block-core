@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/FitBlock/fit-block-core#readme",
   "dependencies": {
-    "bitcoin-key-generator": "^1.0.4",
     "ecdsa-secp256k1": "^1.0.5"
   },
   "devDependencies": {
