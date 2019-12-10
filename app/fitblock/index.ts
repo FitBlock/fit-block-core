@@ -12,7 +12,6 @@ export default class FitBlock extends AppBase {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
-
     }
     genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
