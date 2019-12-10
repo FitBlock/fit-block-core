@@ -8,24 +8,24 @@ import AppBase from '../../types/AppBase';
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
-    constructor() {
+    constructor(godAdress) {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
     }
-    genPrivateKeyByString(data: string): string {
+    static genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
     }
-    genPrivateKeyByRand(): string {
+    static genPrivateKeyByRand(): string {
         return ecdsa.randPrivateKeyNum().toString(16);
     }
-    getPublicKeyByPrivateKey(privateKey: string): string {
+    static getPublicKeyByPrivateKey(privateKey: string): string {
         return ecdsa.publicKeyPoint2HexStr(ecdsa.getPublicKeyPoint(`0x${privateKey}`));
     }
-    getWalletAdressByPublicKey(publicKey: string): string {
+    static getWalletAdressByPublicKey(publicKey: string): string {
         return hex2Base58(publicKey);
     }
-    getPublicKeyByWalletAdress(walletAdress: string): string {
+    static getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
 

@@ -1,19 +1,16 @@
 import BlockBase from '../../types/BlockBase';
+import TransactionSign from './transactionSign';
 export default class Block extends BlockBase {
-    timestamp:Number;
-    transactions:Array<String>;
-    nextBlockHash: string;
-    workerAddress: string;
     constructor () {
         super();
     }
     
-    addTransaction(transaction: string) {
-        this.transactions.push(transaction);
+    addTransaction(transactionSign: TransactionSign) {
+        this.transactions.push(transactionSign);
     }
-
-    setNextBlockHash(hash: string): void {
-        this.nextBlockHash = hash;
+    outBlock(nextBlockHash: string, walletAdress: string): void {
+        this.nextBlockHash = nextBlockHash;
+        this.workerAddress = walletAdress;
         this.timestamp = new Date().getTime();
     }
 }

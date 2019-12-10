@@ -24,7 +24,7 @@ export default abstract class StoreBase{
         return await this.db.get(key);
     }
 
-    query(queryOptions:QueryOptions):ReadableStream {
+    query(queryOptions:QueryOptions):AsyncIterable<any> {
         return this.db.query(queryOptions);
     }
 

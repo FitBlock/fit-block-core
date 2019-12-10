@@ -44,7 +44,7 @@ export class LevelDB {
         return await this.db.get(key);
     }
 
-    query(queryOptions:QueryOptions):ReadableStream {
+    query(queryOptions:QueryOptions):AsyncIterable<any> {
         return this.db.createReadStream(queryOptions);
     }
 
