@@ -1,11 +1,12 @@
 import TransactionBaseSign from './TransactionSignBase';
 
 export default abstract class BlockBase {
-    timestamp:Number;
+    timestamp:number;
     transactions:Array<TransactionBaseSign>;
     nextBlockHash: string;
+    nextBlockVal: string;
     workerAddress: string;
-    nHardBit:Number = 2;
+    nHardBit:number = 2;
     constructor () {
         this.transactions = [];
     }
@@ -13,5 +14,5 @@ export default abstract class BlockBase {
     
     abstract verifyTransaction(transactionSign: TransactionBaseSign): boolean;
 
-    abstract outBlock(nextBlockHash: string, walletAdress: string): void;
+    abstract outBlock(nextBlockVal: string, walletAdress: string): void;
 }

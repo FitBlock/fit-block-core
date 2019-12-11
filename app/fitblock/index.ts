@@ -5,13 +5,19 @@ import Block from './Block';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
+import config from './config'
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
-    constructor(godAdress) {
+    constructor() {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
+        const godPrivateKey = FitBlock.genPrivateKeyByRand();
+        const godWalletAdress = FitBlock.getWalletAdressByPublicKey(
+            FitBlock.getPublicKeyByPrivateKey(godPrivateKey)
+        );
+        this.godBlock.outBlock(Buffer.allocUnsafe(config.blockValLen).toString('hex'),godWalletAdress);
     }
     static genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
@@ -38,10 +44,10 @@ export default class FitBlock extends AppBase {
 
     //  优先同步区块，传播未成块的交易数据
     sendTransaction():TransactionSign {
-        return new TransactionSign();
+        throw new Error("Method not implemented.");
     }
     acceptTransaction(transactionSign:TransactionSign):TransactionSign {
-        return new TransactionSign();
+        throw new Error("Method not implemented.");
     }
     // 通过区块hash值发送区块
     sendBlockByHash(blockHash: string): Block {
