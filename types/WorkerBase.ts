@@ -1,5 +1,5 @@
 import BlockBase from './BlockBase'
 export default abstract class WorkerBase {
-    abstract mining(nowBlock:BlockBase):BlockBase;
-    abstract verifyNextBlockHash(nowBlock:BlockBase, nextBlockVal:string):boolean;
+    abstract mining(preBlock:BlockBase):BlockBase;
+    abstract verifyNextBlockHash(preBlock:BlockBase, nextBlockVal:string):boolean;
 }

@@ -3,24 +3,30 @@ import {createHash} from 'crypto';
 import Block from './Block';
 import config from './config'
 export default class Worker extends WorkerBase {
-    mining(nowBlock: Block): Block {
-        const blockValBuf = Buffer.allocUnsafe(config.blockValLen);
+    mining(preBlock: Block): Block {
         let startBigInt = 0n;
         let nextBlockHash;
         do {
-            blockValBuf.writeBigInt64BE(startBigInt);
-            nextBlockHash =  createHash('sha256').update(blockValBuf.toString('hex')).digest('hex');
-        } while(!(this.verifyNextBlockHash(nowBlock, nextBlockHash)));
-        
+            startBigInt++;
+            nextBlockHash =  createHash('sha256').update(startBigInt.toString()).digest('hex');
+        } while(!(this.verifyNextBlockHash(preBlock, nextBlockHash)));
+        const newBlock = new Block();
+        this.addTransactionInBlock(newBlock);
+        newBlock.outBlock(startBigInt.toString(), config.selfWalletAdress);
+        return newBlock;
     }
 
-    verifyNextBlockHash(nowBlock:Block, nextBlockHash:string):boolean {
-        const originVerify = nowBlock.nextBlockHash.substr(-1, nowBlock.nHardBit);
-        const nextVerify = nextBlockHash.substr(0, nowBlock.nHardBit);
+    verifyNextBlockHash(preBlock:Block, nextBlockHash:string):boolean {
+        const originVerify = preBlock.nextBlockHash.substr(-1, preBlock.nHardBit);
+        const nextVerify = nextBlockHash.substr(0, preBlock.nHardBit);
         if(originVerify==nextVerify) {
             return true;
         }
         return false;
+    }
+
+    addTransactionInBlock(newBlock: Block): Block {
+        throw new Error("Method not implemented.");
     }
     
 }

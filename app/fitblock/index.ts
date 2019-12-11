@@ -13,11 +13,7 @@ export default class FitBlock extends AppBase {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
-        const godPrivateKey = FitBlock.genPrivateKeyByRand();
-        const godWalletAdress = FitBlock.getWalletAdressByPublicKey(
-            FitBlock.getPublicKeyByPrivateKey(godPrivateKey)
-        );
-        this.godBlock.outBlock(Buffer.allocUnsafe(config.blockValLen).toString('hex'),godWalletAdress);
+        this.godBlock.outBlock(Buffer.allocUnsafe(config.blockValLen).toString('hex'),config.selfWalletAdress);
     }
     static genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
