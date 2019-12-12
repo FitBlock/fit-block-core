@@ -8,11 +8,13 @@ export default class Worker extends WorkerBase {
         let nextBlockHash;
         do {
             startBigInt++;
-            nextBlockHash =  createHash('sha256').update(startBigInt.toString()).digest('hex');
+            nextBlockHash =  preBlock.getBlockHashByBlockVal(
+                preBlock.getBlockValByBigInt(startBigInt)
+            );
         } while(!(this.verifyNextBlockHash(preBlock, nextBlockHash)));
         const newBlock = new Block();
         this.addTransactionInBlock(newBlock);
-        newBlock.outBlock(startBigInt.toString(), config.selfWalletAdress);
+        newBlock.outBlock(preBlock.getBlockValByBigInt(startBigInt), config.selfWalletAdress);
         return newBlock;
     }
 

@@ -15,19 +15,19 @@ export default class FitBlock extends AppBase {
         this.godBlock = new Block();
         this.godBlock.outBlock(Buffer.allocUnsafe(config.blockValLen).toString('hex'),config.selfWalletAdress);
     }
-    static genPrivateKeyByString(data: string): string {
+    genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
     }
-    static genPrivateKeyByRand(): string {
+    genPrivateKeyByRand(): string {
         return ecdsa.randPrivateKeyNum().toString(16);
     }
-    static getPublicKeyByPrivateKey(privateKey: string): string {
+    getPublicKeyByPrivateKey(privateKey: string): string {
         return ecdsa.publicKeyPoint2HexStr(ecdsa.getPublicKeyPoint(`0x${privateKey}`));
     }
-    static getWalletAdressByPublicKey(publicKey: string): string {
+    getWalletAdressByPublicKey(publicKey: string): string {
         return hex2Base58(publicKey);
     }
-    static getPublicKeyByWalletAdress(walletAdress: string): string {
+    getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
 

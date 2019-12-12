@@ -11,6 +11,8 @@ export default abstract class BlockBase {
         this.transactions = [];
     }
     abstract addTransaction(transactionSign: TransactionBaseSign): void;
+
+    abstract getBlockHashByBlockVal(nextBlockVal: string):string;
     
     abstract verifyTransaction(transactionSign: TransactionBaseSign): boolean;
 
