@@ -1,5 +1,5 @@
 export default {
-    blockValLen:64,
+    initBlockValLen:128,
     minHardBit:2,
     selfWalletAdress:''
 }

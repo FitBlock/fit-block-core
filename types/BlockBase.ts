@@ -4,7 +4,7 @@ export default abstract class BlockBase {
     timestamp:number;
     transactions:Array<TransactionBaseSign>;
     nextBlockHash: string;
-    nextBlockVal: string;
+    blockVal: string;
     workerAddress: string;
     nHardBit:number = 2;
     constructor () {
@@ -12,7 +12,9 @@ export default abstract class BlockBase {
     }
     abstract addTransaction(transactionSign: TransactionBaseSign): void;
 
-    abstract getBlockHashByBlockVal(nextBlockVal: string):string;
+    abstract genBlockHash():string;
+
+    abstract verifyNextBlock(nextBlock:BlockBase):boolean;
     
     abstract verifyTransaction(transactionSign: TransactionBaseSign): boolean;
 

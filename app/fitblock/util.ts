@@ -10,7 +10,7 @@ const base58KeysObject = {
 const base58Keys = Object.keys(base58KeysObject);
 const base58Len = 58n;
 
-export function hex2Base58(hexNum)
+export function hex2Base58(hexNum:string):string
 {
     let base58NumArray =[];
     let bigHexNumber = BigInt(`0x${hexNum}`);
@@ -23,7 +23,7 @@ export function hex2Base58(hexNum)
     return base58NumArray.join("");
 }
 
-export function base582Hex(base58Num)
+export function base582Hex(base58Num:string):string
 {
     let base58NumArray =base58Num.split("");
     let big58Number = 0n;
@@ -34,4 +34,14 @@ export function base582Hex(base58Num)
         big58Number += big58NumberTemp;
     }
     return big58Number.toString(16);
+}
+
+export function getRandHexNumByDigit(digitNum:number):string
+{
+    const num = Math.round(Math.random()*15);
+    const hexNums = [];
+    for(let i = 0;i<digitNum;i++) {
+        hexNums.push(num.toString(16));
+    }
+    return hexNums.join('');
 }

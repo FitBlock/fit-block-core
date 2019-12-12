@@ -1,5 +1,5 @@
 import {createHash} from 'crypto';
-import {hex2Base58, base582Hex} from './util';
+import {hex2Base58, base582Hex, getRandHexNumByDigit} from './util';
 import ecdsa from 'ecdsa-secp256k1';
 import Block from './Block';
 import Transaction from './Transaction';
@@ -13,7 +13,7 @@ export default class FitBlock extends AppBase {
         super();
         this.name = 'fitblock';
         this.godBlock = new Block();
-        this.godBlock.outBlock(Buffer.allocUnsafe(config.blockValLen).toString('hex'),config.selfWalletAdress);
+        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen),config.selfWalletAdress);
     }
     genPrivateKeyByString(data: string): string {
         return createHash('sha256').update(data).digest('hex');
