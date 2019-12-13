@@ -1,5 +1,4 @@
 import WorkerBase from '../../types/WorkerBase';
-import {createHash} from 'crypto';
 import Block from './Block';
 import config from './config'
 export default class Worker extends WorkerBase {
@@ -9,7 +8,7 @@ export default class Worker extends WorkerBase {
         let startBigInt = 0n;
         do {
             startBigInt++;
-        } while(!(preBlock.verifyNextBlock(newBlock)));
+        } while(!(preBlock.verifyNextBlockVal(newBlock)));
         newBlock.outBlock(preBlock.getBlockValByBigInt(startBigInt), config.selfWalletAdress);
         return newBlock;
     }

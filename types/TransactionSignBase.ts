@@ -1,11 +1,12 @@
 import TransactionBase from './TransactionBase';
 export default abstract class TransactionSignBase {
     transaction:TransactionBase;
-    signData:string;
+    signString:string;
     isInBlock:boolean;
-    constructor(transaction:TransactionBase,signData:string) {
+    constructor(transaction:TransactionBase) {
         this.transaction = transaction;
-        this.signData = signData;
         this.isInBlock = false;
     }
+    abstract sign(privateKey: string):string;
+    abstract verify():boolean;
 }

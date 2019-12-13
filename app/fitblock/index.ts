@@ -1,6 +1,7 @@
 import {createHash} from 'crypto';
 import {hex2Base58, base582Hex, getRandHexNumByDigit} from './util';
 import ecdsa from 'ecdsa-secp256k1';
+import Wallet from './Wallet';
 import Block from './Block';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
@@ -9,33 +10,40 @@ import config from './config'
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
+    myWallet: Wallet;
     constructor() {
         super();
         this.name = 'fitblock';
+        this.myWallet = new Wallet(config.selfWalletAdress);
+    }
+
+    genGodBlock():void {
         this.godBlock = new Block();
         this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen),config.selfWalletAdress);
     }
-    genPrivateKeyByString(data: string): string {
-        return createHash('sha256').update(data).digest('hex');
+
+    loadGodBlock():void {
+        throw new Error("Method not implemented.");
+    }
+
+    genPrivateKeyByString(textData: string): string {
+        return this.myWallet.genPrivateKeyByString(textData);
     }
     genPrivateKeyByRand(): string {
-        return ecdsa.randPrivateKeyNum().toString(16);
+        return this.myWallet.genPrivateKeyByString();
     }
     getPublicKeyByPrivateKey(privateKey: string): string {
-        return ecdsa.publicKeyPoint2HexStr(ecdsa.getPublicKeyPoint(`0x${privateKey}`));
+        return this.myWallet.getPublicKeyByPrivateKey(privateKey);
     }
     getWalletAdressByPublicKey(publicKey: string): string {
-        return hex2Base58(publicKey);
+        return this.myWallet.getWalletAdressByPublicKey(publicKey);
     }
     getPublicKeyByWalletAdress(walletAdress: string): string {
-        return base582Hex(walletAdress);
+        return this.myWallet.getPublicKeyByWalletAdress(walletAdress);
     }
 
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:Number):TransactionSign {
-        const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));
-        const transaction = new Transaction(senderAdress,accepterAdress,transCoinNumber);
-        const signData = ecdsa.sign(`0x${privateKey}`,transaction.serialize());
-        return new TransactionSign(transaction,signData);
+        return this.myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
     }
 
     //  优先同步区块，传播未成块的交易数据

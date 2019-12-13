@@ -9,7 +9,7 @@ export default class Block extends BlockBase {
     }
     
     addTransaction(transactionSign: TransactionSign) {
-        this.transactions.push(transactionSign);
+        this.transactionSigns.push(transactionSign);
     }
 
     outBlock(nextBlockVal: string, walletAdress: string): void {
@@ -24,25 +24,50 @@ export default class Block extends BlockBase {
     }
 
     genBlockHash():string {
-        return createHash('sha256').update(`${JSON.stringify(this.transactions)}|${this.BlockVal}`).digest('hex');
+        return createHash('sha256').update(`${JSON.stringify(this.transactionSigns)}|${this.blockVal}`).digest('hex');
     }
 
-    verifyNextBlock(nextBlock:Block):boolean {
-        const nextBlockHash = nextBlock.genBlockHash();
-        const originVerify = this.nextBlockHash.substr(-1, this.nHardBit);
-        const nextVerify = nextBlockHash.substr(0, this.nHardBit);
-        if(originVerify!=nextVerify) {return false;}
-        for(const transaction of nextBlock.transactions) {
-            if(!this.verifyTransaction(transaction)){return false;}
-        }
-        if(nextBlock.nextBlockHash) {
-            if(nextBlock.nextBlockHash!=nextBlockHash){return false;}
-        } else {
-            nextBlock.nextBlockHash = nextBlockHash;
+    verifyTransactions(nextBlock:Block): boolean {
+        for(const transactionSign of nextBlock.transactionSigns) {
+            if(!transactionSign.verify()){return false;}
         }
         return true;
     }
-    verifyTransaction(transactionSign: TransactionSign): boolean {
-        throw new Error("Method not implemented.");
+
+    verifyNextBlockVal(nextBlock:Block):boolean {
+        const nextBlockHash = nextBlock.genBlockHash();
+        const originVerify = this.nextBlockHash.substr(-1, this.nHardBit);
+        const nextVerify = nextBlockHash.substr(0, this.nHardBit);
+        if(originVerify!==nextVerify) {return false;}
+        return true;
     }
+    verifyNextBlockHash(nextBlock:Block):boolean {
+        if(!this.verifyNextBlockVal(nextBlock)){return false;}
+        const nextBlockHash = nextBlock.genBlockHash();
+        if(nextBlock.nextBlockHash!==nextBlockHash) {return false;}
+        return true;
+    }
+    getNextBlockNHardBit(nextBlock:Block):number {
+        let nHardBit;
+        if(nextBlock.timestamp-this.timestamp>config.incrHardBitTime) {
+            nHardBit = this.nHardBit+1;
+        } else {
+            nHardBit = this.nHardBit-1;
+        }
+        if(nHardBit>config.maxHardBit){nHardBit = config.maxHardBit;}
+        if(nHardBit<config.minHardBit){nHardBit = config.minHardBit;}
+        return nHardBit;
+    }
+    verifyNextBlockNHardBit(nextBlock:Block):boolean {
+        const nHardBit = this.getNextBlockNHardBit(nextBlock);
+        if(nextBlock.nHardBit!==nHardBit) {return false;}
+        return true;
+    }
+    verifyNextBlock(nextBlock:Block):boolean {
+        if(!this.verifyTransactions(nextBlock)){return false;}
+        if(!this.verifyNextBlockHash(nextBlock)){return false;}
+        if(!this.verifyNextBlockNHardBit(nextBlock)){return false;}
+        return true;
+    }
+    
 }

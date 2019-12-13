@@ -1,8 +1,12 @@
+import WalletBase from './WalletBase'
 import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default abstract class AppBase{
     abstract name: string;
     abstract godBlock: BlockBase;
+    myWallet: WalletBase;
+    abstract genGodBlock():void;
+    abstract loadGodBlock():void;
     abstract genPrivateKeyByString(data: string): string;
     abstract genPrivateKeyByRand(): string;
     abstract getPublicKeyByPrivateKey(privateKey: string): string;
