@@ -1,15 +1,15 @@
 export default abstract class TransactionBase {
-    timestamp:Number;
+    timestamp:number;
     senderAdress:string;
     accepterAdress:string;
-    transCoinNumber:Number;
-    constructor(senderAdress:string,accepterAdress:string,transCoinNumber:Number) {
+    transCoinNumber:number;
+    constructor(senderAdress:string,accepterAdress:string,transCoinNumber:number) {
         this.senderAdress = senderAdress;
         this.accepterAdress = accepterAdress;
         this.transCoinNumber = transCoinNumber;
         this.timestamp = new Date().getTime();
     }
-
+    abstract getTradingFees():number;
     serialize() {
         return JSON.stringify({
             timestamp:this.timestamp,

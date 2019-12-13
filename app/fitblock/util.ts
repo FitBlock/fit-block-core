@@ -20,12 +20,12 @@ export function hex2Base58(hexNum:string):string
         bigHexNumber = bigHexNumber / base58Len;
     }
     base58NumArray.unshift(base58Keys[bigHexNumber.toString()]);
-    return base58NumArray.join("");
+    return base58NumArray.join('');
 }
 
 export function base582Hex(base58Num:string):string
 {
-    let base58NumArray =base58Num.split("");
+    let base58NumArray =base58Num.split('');
     let big58Number = 0n;
     let len = base58NumArray.length;
     for(let i = 1;i<=len;i++)

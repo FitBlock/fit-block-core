@@ -1,9 +1,6 @@
-import {createHash} from 'crypto';
-import {hex2Base58, base582Hex, getRandHexNumByDigit} from './util';
-import ecdsa from 'ecdsa-secp256k1';
+import {getRandHexNumByDigit} from './util';
 import Wallet from './Wallet';
 import Block from './Block';
-import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config'
@@ -14,7 +11,8 @@ export default class FitBlock extends AppBase {
     constructor() {
         super();
         this.name = 'fitblock';
-        this.myWallet = new Wallet(config.selfWalletAdress);
+        this.myWallet = new Wallet();
+        this.myWallet.setwalletAdress(config.selfWalletAdress);
     }
 
     genGodBlock():void {
@@ -30,7 +28,7 @@ export default class FitBlock extends AppBase {
         return this.myWallet.genPrivateKeyByString(textData);
     }
     genPrivateKeyByRand(): string {
-        return this.myWallet.genPrivateKeyByString();
+        return this.myWallet.genPrivateKeyByRand();
     }
     getPublicKeyByPrivateKey(privateKey: string): string {
         return this.myWallet.getPublicKeyByPrivateKey(privateKey);
@@ -42,7 +40,7 @@ export default class FitBlock extends AppBase {
         return this.myWallet.getPublicKeyByWalletAdress(walletAdress);
     }
 
-    genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:Number):TransactionSign {
+    genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         return this.myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
     }
 

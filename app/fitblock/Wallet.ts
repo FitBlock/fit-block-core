@@ -23,7 +23,7 @@ export default class Wallet extends WalletBase {
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
-    genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:Number):TransactionSign {
+    genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));
         const transaction = new Transaction(senderAdress,accepterAdress,transCoinNumber);
         const transactionSign = new TransactionSign(transaction);
