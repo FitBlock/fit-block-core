@@ -4,18 +4,17 @@ import {createHash} from 'crypto';
 import config from './config'
 export default class Block extends BlockBase {
     nHardBit:number = config.minHardBit;
-    constructor () {
-        super();
+    constructor (walletAdress) {
+        super(walletAdress);
     }
     
     addTransaction(transactionSign: TransactionSign) {
         this.transactionSigns.push(transactionSign);
     }
 
-    outBlock(nextBlockVal: string, walletAdress: string): void {
+    outBlock(nextBlockVal: string): void {
         this.blockVal = nextBlockVal;
         this.nextBlockHash = this.genBlockHash();
-        this.workerAddress = walletAdress;
         this.timestamp = new Date().getTime();
     }
 
@@ -24,7 +23,7 @@ export default class Block extends BlockBase {
     }
 
     genBlockHash():string {
-        return createHash('sha256').update(`${JSON.stringify(this.transactionSigns)}|${this.blockVal}`).digest('hex');
+        return createHash('sha256').update(`${JSON.stringify(this.transactionSigns)}|${this.blockVal}|${this.workerAddress}`).digest('hex');
     }
 
     verifyTransactions(nextBlock:Block): boolean {
@@ -58,6 +57,11 @@ export default class Block extends BlockBase {
         if(nHardBit<config.minHardBit){nHardBit = config.minHardBit;}
         return nHardBit;
     }
+    verifyNextBlockTimestamp(nextBlock:Block):boolean {
+        if(nextBlock.timestamp<this.timestamp)  {return false;}
+        if(new Date().getTime()<nextBlock.timestamp)  {return false;}
+        return 
+    }
     verifyNextBlockNHardBit(nextBlock:Block):boolean {
         const nHardBit = this.getNextBlockNHardBit(nextBlock);
         if(nextBlock.nHardBit!==nHardBit) {return false;}
@@ -66,6 +70,7 @@ export default class Block extends BlockBase {
     verifyNextBlock(nextBlock:Block):boolean {
         if(!this.verifyTransactions(nextBlock)){return false;}
         if(!this.verifyNextBlockHash(nextBlock)){return false;}
+        if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}
         if(!this.verifyNextBlockNHardBit(nextBlock)){return false;}
         return true;
     }

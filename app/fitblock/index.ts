@@ -14,7 +14,7 @@ export default class FitBlock extends AppBase {
     }
 
     genGodBlock():void {
-        this.godBlock = new Block();
+        this.godBlock = new Block(config.godWalletAdress);
         this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen),config.selfWalletAdress);
     }
 

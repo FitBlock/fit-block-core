@@ -7,7 +7,8 @@ export default abstract class BlockBase {
     blockVal: string;
     workerAddress: string;
     nHardBit:number = 2;
-    constructor () {
+    constructor (workerAddress) {
+        this.workerAddress = workerAddress;
         this.transactionSigns = [];
     }
     abstract addTransaction(transactionSign: TransactionBaseSign): void;
@@ -19,6 +20,7 @@ export default abstract class BlockBase {
     abstract verifyTransactions(nextBlock:BlockBase): boolean;
     abstract verifyNextBlockVal(nextBlock:BlockBase):boolean;
     abstract verifyNextBlockHash(nextBlock:BlockBase):boolean;
+    abstract verifyNextBlockTimestamp(nextBlock:BlockBase):boolean;
     abstract verifyNextBlockNHardBit(nextBlock:BlockBase):boolean;
 
     abstract verifyNextBlock(nextBlock:BlockBase):boolean;
