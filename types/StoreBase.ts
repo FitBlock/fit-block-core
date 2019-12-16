@@ -1,15 +1,29 @@
 import AppBase from './AppBase';
-import {LevelDB,BatchOperate,QueryOptions} from './util/level'
-export default abstract class StoreBase{
-    appName: string;
-    db: LevelDB;
+import {LevelDB,BatchOperate,QueryOptions} from './util/level';
+import BlockBase from './BlockBase'
+import TransactionSignBase from './TransactionSignBase'
+export default  abstract class StoreBase{
+    private appName: string;
+    private db: LevelDB;
     constructor(app:AppBase) {
         this.appName = app.name;
         this.checkAppName(this.appName);
         this.db = new LevelDB(this.appName);
     }
 
-    checkAppName(appName:string):boolean {
+    abstract getBlockDataKey(blockHash:string):string;
+
+    abstract getBlockData(blockHash:string):BlockBase;
+
+    abstract keepBlockData(Block:BlockBase):boolean;
+
+    abstract getNotTransactionDataKey(transactionSign:TransactionSignBase):string;
+    
+    abstract keepNotTransactionData(transactionSign:TransactionSignBase):boolean;
+
+    abstract getAllNotTransactionData():Array<TransactionSignBase>;
+
+    private checkAppName(appName:string):boolean {
         if(!(/^[a-z]{1}[a-z0-9_-]{1,30}$/u).test(appName)) {
             throw new Error('app name must begin with a lower letter and spell with a-z0-9_-');
         }
@@ -28,11 +42,11 @@ export default abstract class StoreBase{
         return await this.db.del(this.addKeyQuery(key));
     }
 
-    addKeyQuery(query: string):string {
+    private addKeyQuery(query: string):string {
         return `${this.appName}:${query}`
     }
 
-    addKeyQueryOptions(queryOptions: QueryOptions):QueryOptions {
+    private addKeyQueryOptions(queryOptions: QueryOptions):QueryOptions {
         const params = new QueryOptions();
         params.gt = this.addKeyQuery(queryOptions.gt);
         params.gte = this.addKeyQuery(queryOptions.gte);
@@ -45,7 +59,7 @@ export default abstract class StoreBase{
         return params;
     }
     
-    addBatchQuery(batchOperate:Array<BatchOperate>):Array<BatchOperate> {
+    private addBatchQuery(batchOperate:Array<BatchOperate>):Array<BatchOperate> {
         const batchParams = [];
         for(const Operate of batchOperate) {
             const params = new BatchOperate();

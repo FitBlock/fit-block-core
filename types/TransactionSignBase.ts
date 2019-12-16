@@ -2,10 +2,10 @@ import TransactionBase from './TransactionBase';
 export default abstract class TransactionSignBase {
     transaction:TransactionBase;
     signString:string;
-    isInBlock:boolean;
+    inBlockHash:string;
     constructor(transaction:TransactionBase) {
         this.transaction = transaction;
-        this.isInBlock = false;
+        this.inBlockHash = '';
     }
     abstract sign(privateKey: string):string;
     abstract verify():boolean;
