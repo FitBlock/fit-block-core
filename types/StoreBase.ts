@@ -17,22 +17,51 @@ export default abstract class StoreBase{
     }
 
     async put(key: string, value:any):Promise<boolean> {
-        return await this.db.put(key, value);
+        return await this.db.put(this.addKeyQuery(key), value);
     }
 
     async get(key: string):Promise<any>  {
-        return await this.db.get(key);
-    }
-
-    query(queryOptions:QueryOptions):AsyncIterable<any> {
-        return this.db.query(queryOptions);
+        return await this.db.get(this.addKeyQuery(key));
     }
 
     async del(key: string):Promise<boolean>  {
-        return await this.db.del(key);
+        return await this.db.del(this.addKeyQuery(key));
+    }
+
+    addKeyQuery(query: string):string {
+        return `${this.appName}:${query}`
+    }
+
+    addKeyQueryOptions(queryOptions: QueryOptions):QueryOptions {
+        const params = new QueryOptions();
+        params.gt = this.addKeyQuery(queryOptions.gt);
+        params.gte = this.addKeyQuery(queryOptions.gte);
+        params.lt = this.addKeyQuery(queryOptions.lt);
+        params.lte = this.addKeyQuery(queryOptions.lte);
+        params.reverse = queryOptions.reverse;
+        params.limit = queryOptions.limit;
+        params.keys = queryOptions.keys;
+        params.values = queryOptions.values;
+        return params;
+    }
+    
+    addBatchQuery(batchOperate:Array<BatchOperate>):Array<BatchOperate> {
+        const batchParams = [];
+        for(const Operate of batchOperate) {
+            const params = new BatchOperate();
+            params.key = this.addKeyQuery(Operate.key);
+            params.type = Operate.type;
+            params.value = Operate.value;
+            batchParams.push(params);
+        }
+        return batchParams;
+    }
+
+    query(queryOptions:QueryOptions):AsyncIterable<any> {
+        return this.db.query(this.addKeyQueryOptions(queryOptions));
     }
 
     async batch(batchOperate:Array<BatchOperate>):Promise<boolean>  {
-        return await this.db.batch(batchOperate);
+        return await this.db.batch(this.addBatchQuery(batchOperate));
     }
 }

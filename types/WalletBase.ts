@@ -4,4 +4,5 @@ export default abstract class WalletBase {
     abstract getPublicKeyByPrivateKey(privateKey: string): string;
     abstract getWalletAdressByPublicKey(publicKey: string): string;
     abstract getPublicKeyByWalletAdress(walletAdress: string): string;
+    abstract getCoinNumberyByWalletAdress(walletAdress: string): number;
 }

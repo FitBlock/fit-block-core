@@ -4,20 +4,20 @@ export enum witreOperate {
     Del = "del",
     Put = "put",
 }
-export abstract class BatchOperate {
-    abstract type: witreOperate;
-    abstract key: string;
-    abstract value:any;
+export class BatchOperate {
+    type: witreOperate;
+    key: string;
+    value:any;
 }
-export abstract class QueryOptions {
-    abstract gt:string;
-    abstract gte:string;
-    abstract lt:string;
-    abstract lte:string;
-    abstract reverse:boolean = false;
-    abstract limit:number = -1;
-    abstract keys:boolean = true;
-    abstract values:boolean = true;
+export class QueryOptions {
+    gt:string;
+    gte:string;
+    lt:string;
+    lte:string;
+    reverse:boolean = false;
+    limit:number = -1;
+    keys:boolean = true;
+    values:boolean = true;
 }
 export abstract class Leveliterator {
     abstract db:level;

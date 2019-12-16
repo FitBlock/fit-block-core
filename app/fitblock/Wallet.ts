@@ -20,6 +20,9 @@ export default class Wallet extends WalletBase {
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
+    getCoinNumberyByWalletAdress(walletAdress: string): number {
+        throw new Error("Method not implemented.");
+    }
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));
         const transaction = new Transaction(senderAdress,accepterAdress,transCoinNumber);

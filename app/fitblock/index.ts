@@ -15,7 +15,7 @@ export default class FitBlock extends AppBase {
 
     genGodBlock():void {
         this.godBlock = new Block(config.godWalletAdress);
-        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen),config.selfWalletAdress);
+        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen));
     }
 
     loadGodBlock():void {
@@ -49,9 +49,9 @@ export default class FitBlock extends AppBase {
     acceptTransaction(transactionSign:TransactionSign):TransactionSign {
         throw new Error("Method not implemented.");
     }
-    // 通过区块hash值发送区块
+    // 通过区块hash值获取要发送的区块
     sendBlockByHash(blockHash: string): Block {
-        return new Block();
+        throw new Error("Method not implemented.");
     }
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     acceptBlock(block: Block): string {
