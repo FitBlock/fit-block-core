@@ -5,9 +5,6 @@ import ecdsa from 'ecdsa-secp256k1';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
 export default class Wallet extends WalletBase {
-    setwalletAdress(walletAdress:string):void {
-        this.walletAdress = walletAdress;
-    }
     genPrivateKeyByString(textData: string): string {
         return createHash('sha256').update(textData).digest('hex');
     }

@@ -3,16 +3,14 @@ import Wallet from './Wallet';
 import Block from './Block';
 import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
-import config from './config'
+import config from './config';
+const myWallet = new Wallet();
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
-    myWallet: Wallet;
     constructor() {
         super();
         this.name = 'fitblock';
-        this.myWallet = new Wallet();
-        this.myWallet.setwalletAdress(config.selfWalletAdress);
     }
 
     genGodBlock():void {
@@ -25,23 +23,23 @@ export default class FitBlock extends AppBase {
     }
 
     genPrivateKeyByString(textData: string): string {
-        return this.myWallet.genPrivateKeyByString(textData);
+        return myWallet.genPrivateKeyByString(textData);
     }
     genPrivateKeyByRand(): string {
-        return this.myWallet.genPrivateKeyByRand();
+        return myWallet.genPrivateKeyByRand();
     }
     getPublicKeyByPrivateKey(privateKey: string): string {
-        return this.myWallet.getPublicKeyByPrivateKey(privateKey);
+        return myWallet.getPublicKeyByPrivateKey(privateKey);
     }
     getWalletAdressByPublicKey(publicKey: string): string {
-        return this.myWallet.getWalletAdressByPublicKey(publicKey);
+        return myWallet.getWalletAdressByPublicKey(publicKey);
     }
     getPublicKeyByWalletAdress(walletAdress: string): string {
-        return this.myWallet.getPublicKeyByWalletAdress(walletAdress);
+        return myWallet.getPublicKeyByWalletAdress(walletAdress);
     }
 
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
-        return this.myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
+        return myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
     }
 
     //  优先同步区块，传播未成块的交易数据
