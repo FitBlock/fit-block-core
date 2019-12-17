@@ -6,9 +6,9 @@
     },
     "include": [
         "index.ts",
-        "types/AppBase.ts",
         "appFactory.ts",
-        "app/**/*", "types/WorkerBase.ts", "types/block.ts", "types/fitblock", "types/TransactionBase.ts"
+        "types/**/*",
+        "app/**/*",
     ],
     "exclude": [
         "node_modules",

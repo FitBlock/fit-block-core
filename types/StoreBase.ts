@@ -13,15 +13,9 @@ export default  abstract class StoreBase{
 
     abstract getBlockDataKey(blockHash:string):string;
 
-    abstract getBlockData(blockHash:string):BlockBase;
+    abstract async getBlockData(blockHash:string):Promise<BlockBase>;
 
-    abstract keepBlockData(Block:BlockBase):boolean;
-
-    abstract getNotTransactionDataKey(transactionSign:TransactionSignBase):string;
-    
-    abstract keepNotTransactionData(transactionSign:TransactionSignBase):boolean;
-
-    abstract getAllNotTransactionData():Array<TransactionSignBase>;
+    abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
 
     private checkAppName(appName:string):boolean {
         if(!(/^[a-z]{1}[a-z0-9_-]{1,30}$/u).test(appName)) {
@@ -43,7 +37,7 @@ export default  abstract class StoreBase{
     }
 
     private addKeyQuery(query: string):string {
-        return `${this.appName}:${query}`
+        return `${this.appName}.${query}`
     }
 
     private addKeyQueryOptions(queryOptions: QueryOptions):QueryOptions {

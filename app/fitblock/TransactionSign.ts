@@ -1,6 +1,6 @@
 import TransactionSignBase from '../../types/TransactionSignBase';
 import Transaction from './Transaction';
-import {base582Hex} from './util';
+import {base582Hex} from './util/base58';
 import ecdsa from 'ecdsa-secp256k1';
 import {createHash} from 'crypto';
 export default class TransactionSign extends TransactionSignBase {

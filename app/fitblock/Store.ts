@@ -1,22 +1,16 @@
 import StoreBase from '../../types/StoreBase';
+import Block from './Block';
+import TransactionSign from './TransactionSign';
 export default class Store extends StoreBase {
     getBlockDataKey(blockHash: string): string {
-        throw new Error("Method not implemented.");
-    }    getBlockData(blockHash: string): import("../../types/BlockBase").default {
-        throw new Error("Method not implemented.");
-    }
-    keepBlockData(Block: import("../../types/BlockBase").default): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getNotTransactionDataKey(transactionSign: import("../../types/TransactionSignBase").default): string {
-        throw new Error("Method not implemented.");
-    }
-    keepNotTransactionData(transactionSign: import("../../types/TransactionSignBase").default): boolean {
-        throw new Error("Method not implemented.");
-    }
-    getAllNotTransactionData(): import("../../types/TransactionSignBase").default[] {
-        throw new Error("Method not implemented.");
+        return `block:${blockHash}`;
     }
 
-    
+    async getBlockData(blockHash:string):Promise<Block> {
+        return await this.get(this.getBlockDataKey(blockHash));
+    }
+
+    async keepBlockData(blockHash:string, block:Block):Promise<boolean> {
+        return await this.put(this.getBlockDataKey(blockHash), block);
+    }  
 }

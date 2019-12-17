@@ -1,6 +1,6 @@
 import {createHash} from 'crypto';
 import WalletBase from '../../types/WalletBase';
-import {hex2Base58, base582Hex} from './util';
+import {hex2Base58, base582Hex} from './util/base58';
 import ecdsa from 'ecdsa-secp256k1';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';

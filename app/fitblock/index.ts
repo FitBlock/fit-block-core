@@ -1,4 +1,4 @@
-import {getRandHexNumByDigit} from './util';
+import {getRandHexNumByDigit} from './util/index';
 import Wallet from './Wallet';
 import Block from './Block';
 import TransactionSign from './transactionSign';
