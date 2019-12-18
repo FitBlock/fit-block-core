@@ -17,7 +17,7 @@ export default class CoinWorker extends CoinWorkerBase {
         newBlock.outBlock(preBlock.getBlockValByBigInt(startBigInt));
         return newBlock;
     }
-    addTransactionInBlock(newBlock: Block): Promise<Block> {
+    async addTransactionInBlock(newBlock: Block): Promise<Block> {
         throw new Error("Method not implemented.");
     }
     

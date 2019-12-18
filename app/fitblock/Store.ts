@@ -1,6 +1,5 @@
 import StoreBase from '../../types/StoreBase';
 import Block from './Block';
-import TransactionSign from './TransactionSign';
 export default class Store extends StoreBase {
     getBlockDataKey(blockHash: string): string {
         return `block:${blockHash}`;

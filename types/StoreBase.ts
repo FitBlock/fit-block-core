@@ -1,12 +1,11 @@
 import AppBase from './AppBase';
 import {LevelDB,BatchOperate,QueryOptions} from './util/level';
 import BlockBase from './BlockBase'
-import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
     private db: LevelDB;
-    constructor(app:AppBase) {
-        this.appName = app.name;
+    constructor(appName:string) {
+        this.appName = appName;
         this.checkAppName(this.appName);
         this.db = new LevelDB(this.appName);
     }

@@ -1,16 +1,16 @@
 import {getRandHexNumByDigit} from './util/index';
-import Wallet from './Wallet';
+import InstanceFactory from './InstanceFactory';
 import Block from './Block';
 import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config';
-const myWallet = new Wallet();
+const myWallet = InstanceFactory.getWalletInstance();
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
     constructor() {
         super();
-        this.name = 'fitblock';
+        this.name = config.appName;
     }
 
     genGodBlock():void {
