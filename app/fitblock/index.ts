@@ -5,6 +5,7 @@ import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config';
 const myWallet = InstanceFactory.getWalletInstance();
+const myStore = InstanceFactory.getStoreInstance();
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
@@ -13,13 +14,14 @@ export default class FitBlock extends AppBase {
         this.name = config.appName;
     }
 
-    genGodBlock():void {
+    async genGodBlock():Promise<void> {
         this.godBlock = new Block(config.godWalletAdress);
-        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen));
+        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));
+        await myStore.keepBlockData(myStore.getGodKey(),this.godBlock)
     }
 
-    loadGodBlock():void {
-        throw new Error("Method not implemented.");
+    async loadGodBlock():Promise<void> {
+        this.godBlock = await myStore.getBlockData(myStore.getGodKey());
     }
 
     genPrivateKeyByString(textData: string): string {
@@ -56,5 +58,9 @@ export default class FitBlock extends AppBase {
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     acceptBlock(block: Block): string {
         return '';
+    }
+
+    mining(): Promise<Block> {
+        throw new Error("Method not implemented.");
     }
 }

@@ -1,6 +1,9 @@
 import StoreBase from '../../types/StoreBase';
 import Block from './Block';
 export default class Store extends StoreBase {
+    getGodKey(): string {
+        return `godBlock`;
+    }
     getBlockDataKey(blockHash: string): string {
         return `block:${blockHash}`;
     }

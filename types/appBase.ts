@@ -3,8 +3,8 @@ import TransactionSignBase from './TransactionSignBase'
 export default abstract class AppBase{
     abstract name: string;
     abstract godBlock: BlockBase;
-    abstract genGodBlock():void;
-    abstract loadGodBlock():void;
+    abstract genGodBlock():Promise<void>;
+    abstract loadGodBlock():Promise<void>;
     abstract genPrivateKeyByString(data: string): string;
     abstract genPrivateKeyByRand(): string;
     abstract getPublicKeyByPrivateKey(privateKey: string): string;
@@ -19,4 +19,6 @@ export default abstract class AppBase{
     abstract sendBlockByHash(blockHash: string): BlockBase;
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     abstract acceptBlock(block: BlockBase): string;
+
+    abstract mining(): Promise<BlockBase>;
 } 

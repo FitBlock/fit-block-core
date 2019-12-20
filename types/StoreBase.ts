@@ -1,4 +1,3 @@
-import AppBase from './AppBase';
 import {LevelDB,BatchOperate,QueryOptions} from './util/level';
 import BlockBase from './BlockBase'
 export default  abstract class StoreBase{
@@ -9,7 +8,7 @@ export default  abstract class StoreBase{
         this.checkAppName(this.appName);
         this.db = new LevelDB(this.appName);
     }
-
+    abstract getGodKey(): string ;
     abstract getBlockDataKey(blockHash:string):string;
 
     abstract async getBlockData(blockHash:string):Promise<BlockBase>;
