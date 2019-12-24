@@ -30,8 +30,7 @@
   },
   "homepage": "https://github.com/FitBlock/fit-block-core#readme",
   "dependencies": {
-    "ecdsa-secp256k1": "^1.0.5",
-    "level": "^6.0.0"
+    "ecdsa-secp256k1": "^1.0.5"
   },
   "devDependencies": {
     "@types/node": "^12.12.14",
