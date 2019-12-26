@@ -1,12 +1,11 @@
-import {LevelDB,BatchOperate,QueryOptions} from './util/level';
+import blockStore from '../../fit-block-store';
+const dbClient = blockStore.getClient();
 import BlockBase from './BlockBase'
 export default  abstract class StoreBase{
     private appName: string;
-    private db: LevelDB;
     constructor(appName:string) {
         this.appName = appName;
         this.checkAppName(this.appName);
-        this.db = new LevelDB(this.appName);
     }
     abstract getGodKey(): string ;
     abstract getBlockDataKey(blockHash:string):string;
@@ -22,52 +21,23 @@ export default  abstract class StoreBase{
         return true;
     }
 
+    private async conect():Promise<boolean> {
+        if(await dbClient.isConect()){return true;}
+        return await dbClient.conect(this.appName);
+    }
+
     async put(key: string, value:any):Promise<boolean> {
-        return await this.db.put(this.addKeyQuery(key), value);
+        await this.conect();
+        return await dbClient.put(key, JSON.stringify(value));
     }
 
     async get(key: string):Promise<any>  {
-        return await this.db.get(this.addKeyQuery(key));
+        await this.conect();
+        return JSON.parse(await dbClient.get(key));
     }
 
     async del(key: string):Promise<boolean>  {
-        return await this.db.del(this.addKeyQuery(key));
-    }
-
-    private addKeyQuery(query: string):string {
-        return `${this.appName}.${query}`
-    }
-
-    private addKeyQueryOptions(queryOptions: QueryOptions):QueryOptions {
-        const params = new QueryOptions();
-        params.gt = this.addKeyQuery(queryOptions.gt);
-        params.gte = this.addKeyQuery(queryOptions.gte);
-        params.lt = this.addKeyQuery(queryOptions.lt);
-        params.lte = this.addKeyQuery(queryOptions.lte);
-        params.reverse = queryOptions.reverse;
-        params.limit = queryOptions.limit;
-        params.keys = queryOptions.keys;
-        params.values = queryOptions.values;
-        return params;
-    }
-    
-    private addBatchQuery(batchOperate:Array<BatchOperate>):Array<BatchOperate> {
-        const batchParams = [];
-        for(const Operate of batchOperate) {
-            const params = new BatchOperate();
-            params.key = this.addKeyQuery(Operate.key);
-            params.type = Operate.type;
-            params.value = Operate.value;
-            batchParams.push(params);
-        }
-        return batchParams;
-    }
-
-    query(queryOptions:QueryOptions):AsyncIterable<any> {
-        return this.db.query(this.addKeyQueryOptions(queryOptions));
-    }
-
-    async batch(batchOperate:Array<BatchOperate>):Promise<boolean>  {
-        return await this.db.batch(this.addBatchQuery(batchOperate));
+        await this.conect();
+        return await dbClient.del(key);
     }
 }
