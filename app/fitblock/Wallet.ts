@@ -4,6 +4,8 @@ import {hex2Base58, base582Hex} from './util/base58';
 import ecdsa from 'ecdsa-secp256k1';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
+import InstanceFactory from './InstanceFactory';
+const myStore = InstanceFactory.getStoreInstance();
 export default class Wallet extends WalletBase {
     genPrivateKeyByString(textData: string): string {
         return createHash('sha256').update(textData).digest('hex');
@@ -20,8 +22,15 @@ export default class Wallet extends WalletBase {
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
-    getCoinNumberyByWalletAdress(walletAdress: string): number {
-        throw new Error("Method not implemented.");
+    async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
+        let coinNum = 0;
+        await myStore.eachBlockData(async (blockData)=>{
+            coinNum+=blockData.getCoinNumByWalletAdress(walletAdress);
+            if(coinNum<0) {
+                throw new Error("wallet coin number not be minus");
+            }
+        })
+        return coinNum;
     }
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));

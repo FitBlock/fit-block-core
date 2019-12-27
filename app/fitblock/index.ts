@@ -1,9 +1,9 @@
 import {getRandHexNumByDigit} from './util/index';
-import InstanceFactory from './InstanceFactory';
 import Block from './Block';
 import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config';
+import InstanceFactory from './InstanceFactory';
 const myWallet = InstanceFactory.getWalletInstance();
 const myStore = InstanceFactory.getStoreInstance();
 export default class FitBlock extends AppBase {

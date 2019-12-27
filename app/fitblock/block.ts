@@ -74,5 +74,9 @@ export default class Block extends BlockBase {
         if(!this.verifyNextBlockNHardBit(nextBlock)){return false;}
         return true;
     }
+
+    getCoinNumByWalletAdress(walletAdress: string): number {
+        throw new Error("Method not implemented.");
+    }
     
 }
