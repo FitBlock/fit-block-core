@@ -14,6 +14,8 @@ export default  abstract class StoreBase{
 
     abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
 
+    abstract async eachBlockData(callback?:(block:BlockBase)=>Promise<void>):Promise<boolean>;
+
     private checkAppName(appName:string):boolean {
         if(!(/^[a-z]{1}[a-z0-9_-]{1,30}$/u).test(appName)) {
             throw new Error('app name must begin with a lower letter and spell with a-z0-9_-');
@@ -33,7 +35,8 @@ export default  abstract class StoreBase{
 
     async get(key: string):Promise<any>  {
         await this.conect();
-        return JSON.parse(await dbClient.get(key));
+        const value = await dbClient.get(key) || '{}';
+        return JSON.parse(value);
     }
 
     async del(key: string):Promise<boolean>  {

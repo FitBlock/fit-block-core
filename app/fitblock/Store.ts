@@ -14,5 +14,16 @@ export default class Store extends StoreBase {
 
     async keepBlockData(blockHash:string, block:Block):Promise<boolean> {
         return await this.put(this.getBlockDataKey(blockHash), block);
-    }  
+    }
+
+    async eachBlockData(callback?:(block:Block)=>Promise<void>):Promise<boolean> {
+        async function readBlock(blockData) {
+            if(!blockData.NextBlockData) {return;}
+            await callback(blockData);
+            await readBlock(await this.getBlockData(blockData.NextBlockData));
+        }
+        let godBlockData = await this.getBlockData(this.getGodKey());
+        await readBlock(godBlockData);
+        return true;
+    }
 }
