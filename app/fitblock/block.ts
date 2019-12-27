@@ -76,7 +76,22 @@ export default class Block extends BlockBase {
     }
 
     getCoinNumByWalletAdress(walletAdress: string): number {
-        throw new Error("Method not implemented.");
+        let coinNum = 0;
+        if(walletAdress===this.workerAddress) {
+            coinNum+=config.outBlockCoinNum;
+            for(const transactionSign of this.transactionSigns) {
+                coinNum+=transactionSign.transaction.getTradingFees();
+            }
+        }
+        for(const transactionSign of this.transactionSigns) {
+            if(walletAdress===transactionSign.transaction.senderAdress) {
+                coinNum-=transactionSign.transaction.transCoinNumber;
+            }
+            if(walletAdress===transactionSign.transaction.accepterAdress) {
+                coinNum+= transactionSign.transaction.getArriveFees();
+            }
+        }
+        return coinNum;
     }
     
 }

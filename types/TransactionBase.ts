@@ -9,6 +9,7 @@ export default abstract class TransactionBase {
         this.transCoinNumber = transCoinNumber;
         this.timestamp = new Date().getTime();
     }
+    abstract getArriveFees():number;
     abstract getTradingFees():number;
     serialize() {
         return JSON.stringify({

@@ -6,6 +6,10 @@ export default class Transaction extends TransactionBase {
         if(transCoinNumber<2){throw new Error('trans coin number must gte 2!')}
         super(senderAdress,accepterAdress,transCoinNumber);
     }
+    getArriveFees():number {
+        return this.transCoinNumber-this.getTradingFees();
+    }
+
     getTradingFees():number {
         return Math.ceil(this.transCoinNumber*config.transactionRate);
     }
