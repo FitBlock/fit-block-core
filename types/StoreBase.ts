@@ -43,4 +43,9 @@ export default  abstract class StoreBase{
         await this.conect();
         return await dbClient.del(key);
     }
+
+    async query(options: Object):Promise<Array<any>>  {
+        await this.conect();
+        return await dbClient.query(options);
+    }
 }
