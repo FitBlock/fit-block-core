@@ -8,7 +8,7 @@ export default class CoinWorker extends CoinWorkerBase {
      * @param preBlock 
      */
     async mining(preBlock: Block): Promise<Block> {
-        const newBlock = new Block(config.selfWalletAdress);
+        const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
         await this.addTransactionInBlock(newBlock);
         let startBigInt = 0n;
         do {

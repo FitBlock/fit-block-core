@@ -6,9 +6,11 @@ export default abstract class BlockBase {
     nextBlockHash: string;
     blockVal: string;
     workerAddress: string;
+    height:number;
     nHardBit:number = 2;
-    constructor (workerAddress) {
+    constructor (workerAddress, height) {
         this.workerAddress = workerAddress;
+        this.height = height;
         this.transactionSigns = [];
     }
     abstract addTransaction(transactionSign: TransactionBaseSign): void;

@@ -15,7 +15,7 @@ export default class FitBlock extends AppBase {
     }
 
     async genGodBlock():Promise<void> {
-        this.godBlock = new Block(config.godWalletAdress);
+        this.godBlock = new Block(config.godWalletAdress, 0);
         this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));
         await myStore.keepBlockData(myStore.getGodKey(),this.godBlock)
     }

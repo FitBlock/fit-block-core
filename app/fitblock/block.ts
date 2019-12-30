@@ -4,8 +4,8 @@ import {createHash} from 'crypto';
 import config from './config'
 export default class Block extends BlockBase {
     nHardBit:number = config.minHardBit;
-    constructor (walletAdress) {
-        super(walletAdress);
+    constructor (walletAdress, height) {
+        super(walletAdress, height);
     }
     
     addTransaction(transactionSign: TransactionSign) {
@@ -24,6 +24,10 @@ export default class Block extends BlockBase {
 
     genBlockHash():string {
         return createHash('sha256').update(`${JSON.stringify(this.transactionSigns)}|${this.blockVal}|${this.workerAddress}`).digest('hex');
+    }
+
+    verifyHeight(nextBlock:Block): boolean {
+        return nextBlock.height+1 ===this.height;
     }
 
     verifyTransactions(nextBlock:Block): boolean {
@@ -68,6 +72,7 @@ export default class Block extends BlockBase {
         return true;
     }
     verifyNextBlock(nextBlock:Block):boolean {
+        if(!this.verifyHeight(nextBlock)){return false;}
         if(!this.verifyTransactions(nextBlock)){return false;}
         if(!this.verifyNextBlockHash(nextBlock)){return false;}
         if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}
@@ -78,7 +83,7 @@ export default class Block extends BlockBase {
     getCoinNumByWalletAdress(walletAdress: string): number {
         let coinNum = 0;
         if(walletAdress===this.workerAddress) {
-            coinNum+=config.outBlockCoinNum;
+            coinNum+=Math.floor(config.initOutBlockCoinNum/Math.ceil(this.height/config.HalfHeightCycle));
             for(const transactionSign of this.transactionSigns) {
                 coinNum+=transactionSign.transaction.getTradingFees();
             }
