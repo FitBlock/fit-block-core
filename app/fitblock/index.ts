@@ -41,8 +41,14 @@ export default class FitBlock extends AppBase {
         return myWallet.getPublicKeyByWalletAdress(walletAdress);
     }
 
-    genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
-        return myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
+    async genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):Promise<TransactionSign> {
+        const transactionSign= myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
+        await myStore.keepTransactionSignData(transactionSign);
+        return transactionSign;
+    }
+
+    async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
+        return await myWallet.getCoinNumberyByWalletAdress(walletAdress);
     }
 
     //  优先同步区块，传播未成块的交易数据

@@ -10,7 +10,8 @@ export default abstract class AppBase{
     abstract getPublicKeyByPrivateKey(privateKey: string): string;
     abstract getWalletAdressByPublicKey(publicKey: string): string;
     abstract getPublicKeyByWalletAdress(walletAdress: string): string;
-    abstract genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSignBase;
+    abstract async genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):Promise<TransactionSignBase>;
+    abstract async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number>
     //  优先同步区块，传播未成块的交易数据
     abstract async sendTransaction():Promise<Array<TransactionSignBase>>
     // 优先同步区块，判断交易是否已存在，如果不存在则接收新的交易数据
