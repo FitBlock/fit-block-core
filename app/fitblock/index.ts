@@ -9,20 +9,23 @@ const myStore = InstanceFactory.getStoreInstance();
 const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
 export default class FitBlock extends AppBase {
     name: string;
-    godBlock: Block;
     constructor() {
         super();
         this.name = config.appName;
     }
 
     async genGodBlock():Promise<void> {
-        this.godBlock = new Block(config.godWalletAdress, 0);
-        this.godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));
-        await myStore.keepBlockData(myStore.getGodKey(),this.godBlock)
+        const godBlock = new Block(config.godWalletAdress, 0);
+        godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));
+        await myStore.keepBlockData(myStore.getGodKey(),godBlock)
     }
 
-    async loadGodBlock():Promise<void> {
-        this.godBlock = await myStore.getBlockData(myStore.getGodKey());
+    getGodBlockHash():string {
+        return myStore.getGodKey();
+    }
+
+    async loadGodBlock():Promise<Block> {
+        return await myStore.getBlockData(myStore.getGodKey());
     }
 
     genPrivateKeyByString(textData: string): string {
