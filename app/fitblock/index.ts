@@ -6,6 +6,7 @@ import config from './config';
 import InstanceFactory from './InstanceFactory';
 const myWallet = InstanceFactory.getWalletInstance();
 const myStore = InstanceFactory.getStoreInstance();
+const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
 export default class FitBlock extends AppBase {
     name: string;
     godBlock: Block;
@@ -45,22 +46,38 @@ export default class FitBlock extends AppBase {
     }
 
     //  优先同步区块，传播未成块的交易数据
-    sendTransaction():TransactionSign {
-        throw new Error("Method not implemented.");
+    async sendTransaction():Promise<Array<TransactionSign>> {
+        const transactionSignList = [];
+        await myStore.eachTransactionSignData(async (transactionSign)=>{
+            transactionSignList.push(transactionSign)
+        })
+        return transactionSignList;
     }
-    acceptTransaction(transactionSign:TransactionSign):TransactionSign {
-        throw new Error("Method not implemented.");
+    async acceptTransaction(transactionSign:TransactionSign):Promise<TransactionSign> {
+        const inBlockTransactionSign = await myStore.getInBlockTransactionSignData(transactionSign);
+        if(inBlockTransactionSign) {
+            return inBlockTransactionSign;
+        }
+        if(!transactionSign.verify()) {
+            throw `nextBlock not pass verify`
+        }
+        await myStore.keepTransactionSignData(transactionSign);
+        return transactionSign;
     }
     // 通过区块hash值获取要发送的区块
-    sendBlockByHash(blockHash: string): Block {
-        throw new Error("Method not implemented.");
+    async sendBlockByHash(blockHash: string): Promise<Block> {
+        throw await myStore.getBlockData(blockHash);;
     }
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
-    acceptBlock(block: Block): string {
-        return '';
+    async acceptBlock(blockHash: string, nextblock: Block): Promise<string> {
+        const lastBlock = await myStore.getBlockData(blockHash);
+        if(!lastBlock.verifyNextBlock(nextblock)) {
+            throw `nextBlock not pass verify`
+        }
+        await myStore.keepBlockData(blockHash, nextblock)
+        return nextblock.nextBlockHash;
     }
-
-    mining(): Promise<Block> {
-        throw new Error("Method not implemented.");
+    async mining(): Promise<Block> {
+        return await myCoinWorker.mining();
     }
 }

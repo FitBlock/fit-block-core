@@ -3,9 +3,10 @@ import TransactionSign from './transactionSign';
 import {createHash} from 'crypto';
 import config from './config'
 export default class Block extends BlockBase {
-    nHardBit:number = config.minHardBit;
+    transactionSigns:Array<TransactionSign>;
     constructor (walletAdress, height) {
         super(walletAdress, height);
+        this.nHardBit = config.minHardBit;
     }
     
     addTransaction(transactionSign: TransactionSign) {
@@ -26,7 +27,7 @@ export default class Block extends BlockBase {
         return createHash('sha256').update(`${JSON.stringify(this.transactionSigns)}|${this.blockVal}|${this.workerAddress}`).digest('hex');
     }
 
-    verifyHeight(nextBlock:Block): boolean {
+    verifyNextBlockHeight(nextBlock:Block): boolean {
         return nextBlock.height+1 ===this.height;
     }
 
@@ -72,7 +73,7 @@ export default class Block extends BlockBase {
         return true;
     }
     verifyNextBlock(nextBlock:Block):boolean {
-        if(!this.verifyHeight(nextBlock)){return false;}
+        if(!this.verifyNextBlockHeight(nextBlock)){return false;}
         if(!this.verifyTransactions(nextBlock)){return false;}
         if(!this.verifyNextBlockHash(nextBlock)){return false;}
         if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}

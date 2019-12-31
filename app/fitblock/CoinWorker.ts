@@ -1,24 +1,33 @@
 import CoinWorkerBase from '../../types/CoinWorkerBase';
 import Block from './Block';
 import config from './config'
+import InstanceFactory from './InstanceFactory';
+const myStore = InstanceFactory.getStoreInstance();
 export default class CoinWorker extends CoinWorkerBase {
-    /**
-     * 思来想去多线程不适合在app里面实现，app就保持单进程单线程最妙，复杂度最低
-     * keep single process single thread in app please.
-     * @param preBlock 
-     */
-    async mining(preBlock: Block): Promise<Block> {
+    async mining(): Promise<Block> {
+        let preBlock = await myStore.getLastBlockData();
         const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
-        await this.addTransactionInBlock(newBlock);
         let startBigInt = 0n;
+        let nextBlockHash = preBlock.nextBlockHash;
         do {
+            preBlock = await myStore.getLastBlockData();
+            if(nextBlockHash!==preBlock.nextBlockHash) {
+                startBigInt = 0n;
+                nextBlockHash = preBlock.nextBlockHash;
+            }
+            newBlock.transactionSigns = [];
+            await this.addTransactionInBlock(nextBlockHash, newBlock);
             startBigInt++;
         } while(!(preBlock.verifyNextBlockVal(newBlock)));
         newBlock.outBlock(preBlock.getBlockValByBigInt(startBigInt));
         return newBlock;
     }
-    async addTransactionInBlock(newBlock: Block): Promise<Block> {
-        throw new Error("Method not implemented.");
+    async addTransactionInBlock(nextBlockHash:string ,newBlock: Block): Promise<Block> {
+        myStore.eachTransactionSignData(async (transactionSign)=>{
+            transactionSign.inBlockHash = nextBlockHash;
+            newBlock.transactionSigns.push(transactionSign)
+        })
+        return newBlock;
     }
     
 }

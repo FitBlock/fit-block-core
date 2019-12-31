@@ -1,6 +1,7 @@
 import blockStore from '../../fit-block-store';
 const dbClient = blockStore.getClient();
 import BlockBase from './BlockBase'
+import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
     constructor(appName:string) {
@@ -15,6 +16,18 @@ export default  abstract class StoreBase{
     abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
 
     abstract async eachBlockData(callback?:(block:BlockBase)=>Promise<void>):Promise<boolean>;
+
+    abstract getInBlockTransactionSignDataKey(timestamp:string,signString: string): string;
+
+    abstract async getInBlockTransactionSignData(transactionSign:TransactionSignBase):Promise<TransactionSignBase>;
+
+    abstract async keepInBlockTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
+
+    abstract getTransactionSignDataKey(timestamp:string,signString: string): string;
+
+    abstract async keepTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
+
+    abstract async eachTransactionSignData(callback?:(transactionSign:TransactionSignBase)=>Promise<void>):Promise<boolean>;
 
     private checkAppName(appName:string):boolean {
         if(!(/^[a-z]{1}[a-z0-9_-]{1,30}$/u).test(appName)) {
@@ -35,8 +48,7 @@ export default  abstract class StoreBase{
 
     async get(key: string):Promise<any>  {
         await this.conect();
-        const value = await dbClient.get(key) || '{}';
-        return JSON.parse(value);
+        return await dbClient.get(key);
     }
 
     async del(key: string):Promise<boolean>  {

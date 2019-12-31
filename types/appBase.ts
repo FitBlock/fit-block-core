@@ -12,13 +12,13 @@ export default abstract class AppBase{
     abstract getPublicKeyByWalletAdress(walletAdress: string): string;
     abstract genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSignBase;
     //  优先同步区块，传播未成块的交易数据
-    abstract sendTransaction():TransactionSignBase;
+    abstract async sendTransaction():Promise<Array<TransactionSignBase>>
     // 优先同步区块，判断交易是否已存在，如果不存在则接收新的交易数据
-    abstract acceptTransaction(transaction:TransactionSignBase):TransactionSignBase;
+    abstract async acceptTransaction(transactionSign:TransactionSignBase):Promise<TransactionSignBase>;
     // 通过区块hash值发送区块
-    abstract sendBlockByHash(blockHash: string): BlockBase;
+    abstract async sendBlockByHash(blockHash: string): Promise<BlockBase>;
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
-    abstract acceptBlock(block: BlockBase): string;
+    abstract async acceptBlock(blockHash: string, nextblock: BlockBase): Promise<string>;
 
-    abstract mining(): Promise<BlockBase>;
+    abstract async mining(): Promise<BlockBase>;
 } 
