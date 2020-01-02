@@ -1,8 +1,11 @@
 import {ok,equal,deepStrictEqual, strictEqual} from 'assert';
 import fitBlock from '../index'
 let testUnit = {
-    [Symbol('test.initFitBlock')] : async function() {
-        
+    [Symbol('test.genGodBlock')] : async function() {
+        await fitBlock.genGodBlock();
+    },
+    [Symbol('test.loadGodBlock')] : async function() {
+        const godBlock = await fitBlock.loadGodBlock();
     },
 }
 

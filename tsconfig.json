@@ -9,6 +9,7 @@
         "appFactory.ts",
         "types/**/*",
         "app/**/*",
+        "test/**/*",
     ],
     "exclude": [
         "node_modules",
