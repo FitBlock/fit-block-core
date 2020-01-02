@@ -1,5 +1,3 @@
-import config from './config';
-import Store from './Store'
 import Wallet from './Wallet'
 import CoinWorker from './CoinWorker' 
 const instanceMap: Map<String, any> = new Map(); 
@@ -8,9 +6,6 @@ function getInstance<T>(name:string):T {
         return instanceMap.get(name);
     }
     switch(name.toLowerCase()) {
-        case 'store':
-            instanceMap.set(name, new Store(config.appName));
-            break;
         case 'wallet':
             instanceMap.set(name, new Wallet());
             break;
@@ -25,9 +20,6 @@ function getInstance<T>(name:string):T {
 export default class InstanceFactory {
     static getWalletInstance():Wallet {
         return getInstance<Wallet>('Wallet');
-    }
-    static getStoreInstance():Store {
-        return getInstance<Store>('Store');
     }
     static getCoinWorkerInstance():CoinWorker {
         return getInstance<CoinWorker>('CoinWorker');

@@ -2,12 +2,14 @@
   "name": "fit-block-core",
   "version": "1.0.0",
   "description": "Stand-alone version of the block program。",
-  "main": "index.js",
+  "main": "build/index.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "node ../../build/test/index"
+    "prepare": "npx tsc",
+    "build": "npx tsc",
+    "test": "node ./build/test/index"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,7 @@
   },
   "homepage": "https://github.com/FitBlock/fit-block-core#readme",
   "dependencies": {
-    "ecdsa-secp256k1": "^1.0.5"
+    "ecdsa-secp256k1": "^1.0.5",
+    "fit-block-store": "^1.0.0"
   }
 }

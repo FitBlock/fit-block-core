@@ -2,7 +2,8 @@ import CoinWorkerBase from '../../types/CoinWorkerBase';
 import Block from './Block';
 import config from './config'
 import InstanceFactory from './InstanceFactory';
-const myStore = InstanceFactory.getStoreInstance();
+import {getStoreInstance} from './Store'
+const myStore = getStoreInstance();
 export default class CoinWorker extends CoinWorkerBase {
     async mining(): Promise<Block> {
         let preBlock = await myStore.getLastBlockData();

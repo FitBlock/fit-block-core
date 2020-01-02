@@ -1,4 +1,4 @@
-import blockStore from '../../fit-block-store';
+import blockStore from 'fit-block-store';
 const dbClient = blockStore.getClient();
 import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'

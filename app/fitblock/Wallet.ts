@@ -5,7 +5,8 @@ import ecdsa from 'ecdsa-secp256k1';
 import Transaction from './Transaction';
 import TransactionSign from './transactionSign';
 import InstanceFactory from './InstanceFactory';
-const myStore = InstanceFactory.getStoreInstance();
+import {getStoreInstance} from './Store'
+const myStore = getStoreInstance();
 export default class Wallet extends WalletBase {
     genPrivateKeyByString(textData: string): string {
         return createHash('sha256').update(textData).digest('hex');

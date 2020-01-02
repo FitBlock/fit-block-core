@@ -4,8 +4,9 @@ import TransactionSign from './transactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config';
 import InstanceFactory from './InstanceFactory';
+import {getStoreInstance} from './Store'
+const myStore = getStoreInstance();
 const myWallet = InstanceFactory.getWalletInstance();
-const myStore = InstanceFactory.getStoreInstance();
 const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
 export default class FitBlock extends AppBase {
     name: string;

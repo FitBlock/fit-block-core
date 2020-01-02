@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target":"ESNext",
+        "outDir": "./build/"
+    },
+    "include": [
+        "app/**/*",
+        "types/**/*",
+        "test/**/*",
+        "appFactory.ts",
+        "index.ts"
+    ]
+}

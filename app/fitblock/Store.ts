@@ -2,6 +2,17 @@ import StoreBase from '../../types/StoreBase';
 import Block from './Block';
 import config from './config';
 import TransactionSign from './TransactionSign';
+
+export const getStoreInstance = ( ()=> {
+    let instance = null;
+    return ()=>{
+        if(instance) {
+            return instance;
+        }
+        instance = new Store(config.appName)
+        return instance
+    }
+})();
 export default class Store extends StoreBase {
     getGodKey(): string {
         return `godBlock`;
