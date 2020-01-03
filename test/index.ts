@@ -9,7 +9,7 @@ const runBefore = {
 }
 const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
-        await fitBlock.genGodBlock();
+        ok(await fitBlock.genGodBlock(),'genGodBlock error!');
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const godBlock = await fitBlock.loadGodBlock();
@@ -29,4 +29,12 @@ async function run(testUnitList) {
         }
     }
 }
-run([runBefore, testUnit, runAfter]);
+(async function() {
+    try {
+        await run([runBefore]);
+        await run([testUnit]);
+    } finally {
+        await run([runAfter]);
+    }
+})();
+

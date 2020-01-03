@@ -2,7 +2,7 @@ import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default abstract class AppBase{
     abstract name: string;
-    abstract async genGodBlock():Promise<void>;
+    abstract async genGodBlock():Promise<boolean>;
     abstract getGodBlockHash():string;
     abstract async loadGodBlock():Promise<BlockBase>;
     abstract genPrivateKeyByString(data: string): string;
