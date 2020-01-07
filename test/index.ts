@@ -1,6 +1,6 @@
-import {ok, equal, deepEqual, deepStrictEqual, strictEqual} from 'assert';
-import fitBlock from '../index'
-import level from 'fit-block-store'
+import { ok } from 'assert';
+import level from 'fit-block-store';
+import fitBlock from '../index';
 const server = level.getServer();
 const runBefore = {
     [Symbol('before.server')] : async function() {
@@ -20,6 +20,28 @@ const testUnit = {
         ok(godBlock.blockVal.length === 128,'loadGodBlock blockVal error!')
         ok(godBlock.nextBlockHash.length === 64,'loadGodBlock nextBlockHash error!')
         ok(godBlock.timestamp > 1578000000000,'loadGodBlock timestamp error!')
+    },
+    [Symbol('test.genPrivateKeyByString')] : async function() {
+        const privateKey = fitBlock.genPrivateKeyByString('123456');
+        ok(
+            privateKey === '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92',
+            'genPrivateKeyByString error!'
+        )
+    },
+    [Symbol('test.genPrivateKeyByRand')] : async function() {
+        const privateKey = fitBlock.genPrivateKeyByRand();
+        ok(
+            privateKey.length === 64,
+            'genPrivateKeyByRand error!'
+        )
+    },
+    [Symbol('test.getPublicKeyByPrivateKey')] : async function() {
+        const publicKey = fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456'));
+        console.log(publicKey)
+        // ok(
+        //     publicKey === 64,
+        //     'getPublicKeyByPrivateKey error!'
+        // )
     },
 }
 

@@ -31,5 +31,8 @@
   "dependencies": {
     "ecdsa-secp256k1": "^1.0.5",
     "fit-block-store": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.4"
   }
 }
