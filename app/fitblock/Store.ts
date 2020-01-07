@@ -33,7 +33,8 @@ export default class Store extends StoreBase {
     }
 
     async getBlockData(blockHash:string):Promise<Block> {
-        return await this.get(this.getBlockDataKey(blockHash)) || {};
+        const dataStr = await this.get(this.getBlockDataKey(blockHash)) || '{}';
+        return JSON.parse(dataStr);
     }
 
     async keepBlockData(blockHash:string, block:Block):Promise<boolean> {

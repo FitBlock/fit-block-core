@@ -15,6 +15,10 @@ export default class FitBlock extends AppBase {
         this.name = config.appName;
     }
 
+    getConfig():any {
+        return config;
+    }
+
     async genGodBlock():Promise<boolean> {
         const godBlock = new Block(config.godWalletAdress, 0);
         godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));

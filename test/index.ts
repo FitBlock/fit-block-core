@@ -1,4 +1,4 @@
-import {ok,equal,deepStrictEqual, strictEqual} from 'assert';
+import {ok, equal, deepEqual, deepStrictEqual, strictEqual} from 'assert';
 import fitBlock from '../index'
 import level from 'fit-block-store'
 const server = level.getServer();
@@ -13,6 +13,13 @@ const testUnit = {
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const godBlock = await fitBlock.loadGodBlock();
+        ok(godBlock.nHardBit === 2,'loadGodBlock nHardBit error!')
+        ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'loadGodBlock workerAddress error!')
+        ok(godBlock.height === 0,'loadGodBlock height error!')
+        ok(godBlock.transactionSigns.length === 0,'loadGodBlock transactionSigns error!')
+        ok(godBlock.blockVal.length === 128,'loadGodBlock blockVal error!')
+        ok(godBlock.nextBlockHash.length === 64,'loadGodBlock nextBlockHash error!')
+        ok(godBlock.timestamp > 1578000000000,'loadGodBlock timestamp error!')
     },
 }
 
