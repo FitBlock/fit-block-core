@@ -55,6 +55,10 @@ export default class FitBlock extends AppBase {
         return transactionSign;
     }
 
+    async mining(): Promise<Block> {
+        return await myCoinWorker.mining();
+    }
+
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         return await myWallet.getCoinNumberyByWalletAdress(walletAdress);
     }
@@ -80,7 +84,7 @@ export default class FitBlock extends AppBase {
     }
     // 通过区块hash值获取要发送的区块
     async sendBlockByHash(blockHash: string): Promise<Block> {
-        throw await myStore.getBlockData(blockHash);;
+        return await myStore.getBlockData(blockHash);;
     }
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     async acceptBlock(blockHash: string, nextblock: Block): Promise<string> {
@@ -90,8 +94,5 @@ export default class FitBlock extends AppBase {
         }
         await myStore.keepBlockData(blockHash, nextblock)
         return nextblock.nextBlockHash;
-    }
-    async mining(): Promise<Block> {
-        return await myCoinWorker.mining();
     }
 }
