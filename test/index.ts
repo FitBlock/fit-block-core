@@ -9,7 +9,8 @@ const runBefore = {
 }
 const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
-        ok(await fitBlock.genGodBlock(),'genGodBlock error!');
+        const godBlock =  await fitBlock.genGodBlock();
+        ok(godBlock,'genGodBlock error!');
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const godBlock = await fitBlock.loadGodBlock();
@@ -37,11 +38,67 @@ const testUnit = {
     },
     [Symbol('test.getPublicKeyByPrivateKey')] : async function() {
         const publicKey = fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456'));
-        console.log(publicKey)
-        // ok(
-        //     publicKey === 64,
-        //     'getPublicKeyByPrivateKey error!'
-        // )
+        ok(
+            publicKey === '431745adae24044ff09c3541537160abb8d5d720275bbaeed0b3d035b1e8b263'+
+            'c3f42d437dc9988eaa686fdd5325eba20f4b73f3062942626060537e1dfe453f8',
+            'getPublicKeyByPrivateKey error!'
+        )
+    },
+    [Symbol('test.getWalletAdressByPublicKey')] : async function() {
+        const publicKey = fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456'));
+        const walletAdress = fitBlock.getWalletAdressByPublicKey(publicKey);
+        ok(
+            walletAdress === 'NTnUXweGFyTWSFExaH3iEG3X7Dcxi8Kyesr5GKvBheSYSqu9PdiMfQNPY6xytKMVaMjpnX3HXt9XEfU4XwBwpLSj',
+            'getWalletAdressByPublicKey error!'
+        )
+    },
+    [Symbol('test.getPublicKeyByWalletAdress')] : async function() {
+        const publicKey = fitBlock.getPublicKeyByWalletAdress(
+            'NTnUXweGFyTWSFExaH3iEG3X7Dcxi8Kyesr5GKvBheSYSqu9PdiMfQNPY6xytKMVaMjpnX3HXt9XEfU4XwBwpLSj'
+        );
+        ok(
+            publicKey === '431745adae24044ff09c3541537160abb8d5d720275bbaeed0b3d035b1e8b263'+
+            'c3f42d437dc9988eaa686fdd5325eba20f4b73f3062942626060537e1dfe453f8',
+            'getPublicKeyByWalletAdress error!'
+        )
+    },
+    [Symbol('test.genTransaction')] : async function() {
+        const privateKey = fitBlock.genPrivateKeyByString('123456');
+        const accepterPublicKey = fitBlock.getPublicKeyByPrivateKey(
+            fitBlock.genPrivateKeyByString('654321')
+        )
+        const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
+        const transactionSign = await fitBlock.genTransaction(
+            privateKey, accepterAdress, 2
+        );
+        ok(
+            transactionSign.transaction.
+            senderAdress === fitBlock.getWalletAdressByPublicKey(fitBlock.getPublicKeyByPrivateKey(privateKey)),
+            'genTransaction.transaction.senderAdress error!'
+        )
+        ok(
+            transactionSign.transaction.
+            accepterAdress === accepterAdress,
+            'genTransaction.transaction.senderAdress error!'
+        )
+        ok(
+            transactionSign.transaction.
+            transCoinNumber === 2,
+            'genTransaction.transaction.transCoinNumber error!'
+        )
+        ok(
+            transactionSign.transaction.
+            timestamp >1578000000000,
+            'genTransaction.transaction.timestamp error!'
+        )
+        ok(
+            transactionSign.inBlockHash ==='',
+            'genTransaction.transaction.inBlockHash error!'
+        )
+        ok(
+            transactionSign.signString.split(',').length ===2,
+            'genTransaction.transaction.signString error!'
+        )
     },
 }
 

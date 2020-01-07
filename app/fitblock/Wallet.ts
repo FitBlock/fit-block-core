@@ -15,9 +15,9 @@ export default class Wallet extends WalletBase {
         return ecdsa.randPrivateKeyNum().toString(16);
     }
     getPublicKeyByPrivateKey(privateKey: string): string {
-        return ecdsa.publicKeyPoint2HexStr(
+        return BigInt(`${ecdsa.publicKeyPoint2HexStr(
             ecdsa.getPublicKeyPoint(`0x${privateKey}`)
-        ).toString(16);
+        )}`).toString(16);
     }
     getWalletAdressByPublicKey(publicKey: string): string {
         return hex2Base58(publicKey);

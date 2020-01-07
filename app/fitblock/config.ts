@@ -4,7 +4,7 @@ export default {
     minHardBit:2,
     maxHardBit:32,
     incrHardBitTime:600*1000, //unit：ms
-    godWalletAdress:'cd8ed15fd102d32600bfe2cbcfa879a47d05085a5ac716d1939797e77225a8f9',//  this maybe be version
+    godWalletAdress:'QYzNQm14LhFS8iiH9fB5q5h52cKbFd3BXhg83eUFUDWdJ3GWuBndVgv3xRK41hrzRLYRQxMZPSRcCMMWrk8LF8Nm',//  this maybe be version
     selfWalletAdress:'',
     transactionRate:0.001,
     HalfHeightCycle:77760, // every (18*30*24*60/10) height to helf

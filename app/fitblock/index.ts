@@ -19,7 +19,7 @@ export default class FitBlock extends AppBase {
         return config;
     }
 
-    async genGodBlock():Promise<boolean> {
+    async genGodBlock():Promise<Block> {
         const godBlock = new Block(config.godWalletAdress, 0);
         godBlock.outBlock(getRandHexNumByDigit(config.initBlockValLen, 10));
         return await myStore.keepBlockData(myStore.getGodKey(),godBlock)
