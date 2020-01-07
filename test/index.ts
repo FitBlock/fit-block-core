@@ -1,7 +1,12 @@
-import { ok } from 'assert';
+import { ok, deepEqual } from 'assert';
 import level from 'fit-block-store';
 import fitBlock from '../index';
+const config = fitBlock.getConfig()
 const server = level.getServer();
+const testWalletAdress = fitBlock.getWalletAdressByPublicKey(fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456')));
+config.godWalletAdress = testWalletAdress;
+config.selfWalletAdress = testWalletAdress;
+let godBlock;
 const runBefore = {
     [Symbol('before.server')] : async function() {
         await server.listen();
@@ -9,18 +14,19 @@ const runBefore = {
 }
 const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
-        const godBlock =  await fitBlock.genGodBlock();
+        godBlock =  await fitBlock.genGodBlock();
         ok(godBlock,'genGodBlock error!');
+        ok(godBlock.nHardBit === 2,'genGodBlock nHardBit error!')
+        ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'genGodBlock workerAddress error!')
+        ok(godBlock.height === 0,'genGodBlock height error!')
+        ok(godBlock.transactionSigns.length === 0,'genGodBlock transactionSigns error!')
+        ok(godBlock.blockVal.length === 128,'genGodBlock blockVal error!')
+        ok(godBlock.nextBlockHash.length === 64,'genGodBlock nextBlockHash error!')
+        ok(godBlock.timestamp > 1578000000000,'genGodBlock timestamp error!')
     },
     [Symbol('test.loadGodBlock')] : async function() {
-        const godBlock = await fitBlock.loadGodBlock();
-        ok(godBlock.nHardBit === 2,'loadGodBlock nHardBit error!')
-        ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'loadGodBlock workerAddress error!')
-        ok(godBlock.height === 0,'loadGodBlock height error!')
-        ok(godBlock.transactionSigns.length === 0,'loadGodBlock transactionSigns error!')
-        ok(godBlock.blockVal.length === 128,'loadGodBlock blockVal error!')
-        ok(godBlock.nextBlockHash.length === 64,'loadGodBlock nextBlockHash error!')
-        ok(godBlock.timestamp > 1578000000000,'loadGodBlock timestamp error!')
+        const loadGodBlock = await fitBlock.loadGodBlock();
+        deepEqual(godBlock,loadGodBlock,'loadGodBlock error!')
     },
     [Symbol('test.genPrivateKeyByString')] : async function() {
         const privateKey = fitBlock.genPrivateKeyByString('123456');
