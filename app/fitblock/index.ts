@@ -34,6 +34,10 @@ export default class FitBlock extends AppBase {
         return await myStore.getBlockData(myStore.getGodKey());
     }
 
+    async loadLastBlockData():Promise<Block> {
+        return await myStore.getLastBlockData();
+    }
+
     genPrivateKeyByString(textData: string): string {
         return myWallet.genPrivateKeyByString(textData);
     }

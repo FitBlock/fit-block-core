@@ -4,6 +4,7 @@ import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
+    transactionSignMap = new Map<string, TransactionSignBase>();
     constructor(appName:string) {
         this.appName = appName;
         this.checkAppName(this.appName);
@@ -17,13 +18,11 @@ export default  abstract class StoreBase{
 
     abstract async eachBlockData(callback?:(block:BlockBase)=>Promise<void>):Promise<boolean>;
 
-    abstract getInBlockTransactionSignDataKey(timestamp:string,signString: string): string;
+    abstract  getTransactionSignMapSize():number;
 
-    abstract async getInBlockTransactionSignData(transactionSign:TransactionSignBase):Promise<TransactionSignBase>;
+    abstract getTransactionSignDataKey(transactionSign:TransactionSignBase): string;
 
-    abstract async keepInBlockTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
-
-    abstract getTransactionSignDataKey(timestamp:string,signString: string): string;
+    abstract delTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 
     abstract async keepTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 
@@ -54,10 +53,5 @@ export default  abstract class StoreBase{
     async del(key: string):Promise<boolean>  {
         await this.conect();
         return await dbClient.del(key);
-    }
-
-    async query(options: Object):Promise<Array<any>>  {
-        await this.conect();
-        return await dbClient.query(options);
     }
 }

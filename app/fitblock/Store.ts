@@ -14,6 +14,7 @@ export const getStoreInstance = ( ()=> {
     }
 })();
 export default class Store extends StoreBase {
+    transactionSignMap = new Map<string, TransactionSign>();
     getGodKey(): string {
         return `godBlock`;
     }
@@ -22,83 +23,66 @@ export default class Store extends StoreBase {
     }
 
     async getLastBlockData():Promise<Block> {
-        const lastBlockKey = `lastBlockKey`;
-        let lastBlock = await this.get(this.getBlockDataKey(lastBlockKey));
-        if(!lastBlock) {
-            await this.eachBlockData(async (blockData)=>{
-                lastBlock = blockData;
-            })
-        }
+        let lastBlock = new Block('', -1);
+        await this.eachBlockData(async (blockData)=>{
+            lastBlock = blockData;
+        })
         return lastBlock;
     }
 
     async getBlockData(blockHash:string):Promise<Block> {
-        const dataStr = await this.get(this.getBlockDataKey(blockHash)) || '{}';
-        return JSON.parse(dataStr);
+        try {
+            const dataStr = await this.get(this.getBlockDataKey(blockHash)) || '{}';
+            return JSON.parse(dataStr);
+        } catch(err) {
+            return new Block('', -1);
+        }
     }
 
     async keepBlockData(blockHash:string, block:Block):Promise<boolean> {
         for(const transactionSign of block.transactionSigns) {
-            await this.keepInBlockTransactionSignData(transactionSign);
+            await this.delTransactionSignData(transactionSign);
         }
         return await this.put(this.getBlockDataKey(blockHash), block);
     }
 
     async eachBlockData(callback?:(block:Block)=>Promise<void>):Promise<boolean> {
-        async function readBlock(blockData) {
-            if(!blockData.NextBlockData) {return;}
+        const readBlock = async (blockData) => {
+            if(!blockData.nextBlockHash) {return;}
             await callback(blockData);
-            await readBlock(await this.getBlockData(blockData.NextBlockData));
+            await readBlock(await this.getBlockData(blockData.nextBlockHash));
         }
         let godBlockData = await this.getBlockData(this.getGodKey());
         await readBlock(godBlockData);
         return true;
     }
 
-    getTransactionSignDataKey(timestamp:string,signString: string): string {
-        return `transaction:${timestamp}:${signString}`;
-    }
-    
-    getInBlockTransactionSignDataKey(timestamp:string,signString: string): string {
-        return `inBlockTransaction:${timestamp}:${signString}`;
+    getTransactionSignDataKey(transactionSign:TransactionSign): string {
+        return `transaction:${transactionSign.transaction.timestamp.toString()}:${transactionSign.signString}`;
     }
 
-    async getInBlockTransactionSignData(transactionSign:TransactionSign):Promise<TransactionSign> {
-        return await this.get(this.getInBlockTransactionSignDataKey(
-            transactionSign.transaction.timestamp.toString(), 
-            transactionSign.signString)
-        ) || {};
+    getTransactionSignMapSize():number {
+        return this.transactionSignMap.size;
     }
 
-    async keepInBlockTransactionSignData(transactionSign:TransactionSign):Promise<boolean> {
-        return await this.put(
-            this.getInBlockTransactionSignDataKey(
-                transactionSign.transaction.timestamp.toString(), 
-                transactionSign.signString), 
-        TransactionSign) &&
-        await this.del(
-            this.getTransactionSignDataKey(
-                transactionSign.transaction.timestamp.toString(), 
-                transactionSign.signString)
-        );
+    async delTransactionSignData(transactionSign:TransactionSign):Promise<boolean> {
+        this.transactionSignMap.delete(
+            this.getTransactionSignDataKey(transactionSign)
+        )
+        return true;
     }
 
     async keepTransactionSignData(transactionSign:TransactionSign):Promise<boolean> {
-        return await this.put(
-            this.getTransactionSignDataKey(
-                transactionSign.transaction.timestamp.toString(), 
-                transactionSign.signString), 
-        TransactionSign);
+        this.transactionSignMap.set(
+            this.getTransactionSignDataKey(transactionSign),
+            transactionSign
+        )
+        return true;
     }
 
     async eachTransactionSignData(callback?:(transactionSign:TransactionSign)=>Promise<void>):Promise<boolean> {
-        const list = await this.query({
-            gt:this.getTransactionSignDataKey('',''),
-            lt:this.getTransactionSignDataKey('a',''),
-            limit:config.maxBlockTransactionSize
-        })
-        for(let value of list) {
-            await callback(JSON.parse(value.value))
+        for(const transactionSignData of this.transactionSignMap) {
+            await callback(transactionSignData[1]);
         }
         return true;
     }

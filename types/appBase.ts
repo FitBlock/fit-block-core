@@ -6,6 +6,7 @@ export default abstract class AppBase{
     abstract async genGodBlock():Promise<BlockBase>;
     abstract getGodBlockHash():string;
     abstract async loadGodBlock():Promise<BlockBase>;
+    abstract async loadLastBlockData():Promise<BlockBase>;
     abstract genPrivateKeyByString(data: string): string;
     abstract genPrivateKeyByRand(): string;
     abstract getPublicKeyByPrivateKey(privateKey: string): string;

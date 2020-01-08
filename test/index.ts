@@ -28,6 +28,10 @@ const testUnit = {
         const loadGodBlock = await fitBlock.loadGodBlock();
         deepEqual(godBlock,loadGodBlock,'loadGodBlock error!')
     },
+    [Symbol('test.loadLastBlockData')] : async function() {
+        const loadLastBlock = await fitBlock.loadLastBlockData();
+        deepEqual(godBlock,loadLastBlock,'loadLastBlockData error!')
+    },
     [Symbol('test.genPrivateKeyByString')] : async function() {
         const privateKey = fitBlock.genPrivateKeyByString('123456');
         ok(
@@ -105,6 +109,10 @@ const testUnit = {
             transactionSign.signString.split(',').length ===2,
             'genTransaction.transaction.signString error!'
         )
+    },
+    [Symbol('test.mining')] : async function() {
+        // todo
+        // const nextBlock = fitBlock.mining();
     },
 }
 
