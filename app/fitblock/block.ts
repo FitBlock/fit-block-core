@@ -29,14 +29,23 @@ export default class Block extends BlockBase {
         return true;
     }
 
-    outBlock(nextBlockVal: string): void {
-        this.blockVal = nextBlockVal;
-        this.nextBlockHash = this.genBlockHash();
-        this.timestamp = new Date().getTime();
+    static createByData(blockData:any): Block {
+        const newBlock = new Block(blockData.workerAddress,blockData.height)
+        Object.assign(newBlock, blockData);
+        return newBlock;
+    }
+
+    outBlock(newBlock: Block): Block {
+        newBlock.nextBlockHash = newBlock.genBlockHash();
+        newBlock.timestamp = new Date().getTime();
+        if(newBlock.height>0) {
+            newBlock.nHardBit = this.getNextBlockNHardBit(newBlock)
+        }
+        return newBlock;
     }
 
     getBlockValByBigInt(blockOriginVal: bigint) {
-        return blockOriginVal.toString(16);
+        return blockOriginVal.toString(config.blockValRadix);
     }
 
     genBlockHash():string {
@@ -44,7 +53,7 @@ export default class Block extends BlockBase {
     }
 
     verifyNextBlockHeight(nextBlock:Block): boolean {
-        return nextBlock.height+1 ===this.height;
+        return nextBlock.height ===this.height+1;
     }
 
     verifyTransactions(nextBlock:Block): boolean {
@@ -56,8 +65,8 @@ export default class Block extends BlockBase {
 
     verifyNextBlockVal(nextBlock:Block):boolean {
         const nextBlockHash = nextBlock.genBlockHash();
-        const originVerify = this.nextBlockHash.substr(-1, this.nHardBit);
-        const nextVerify = nextBlockHash.substr(0, this.nHardBit);
+        const originVerify = this.nextBlockHash.substring(this.nextBlockHash.length-this.nHardBit);
+        const nextVerify = nextBlockHash.substring(0, this.nHardBit);
         if(originVerify!==nextVerify) {return false;}
         return true;
     }
@@ -69,7 +78,7 @@ export default class Block extends BlockBase {
     }
     getNextBlockNHardBit(nextBlock:Block):number {
         let nHardBit;
-        if(nextBlock.timestamp-this.timestamp>config.incrHardBitTime) {
+        if(nextBlock.timestamp-this.timestamp<config.incrHardBitTime) {
             nHardBit = this.nHardBit+1;
         } else {
             nHardBit = this.nHardBit-1;
@@ -79,9 +88,9 @@ export default class Block extends BlockBase {
         return nHardBit;
     }
     verifyNextBlockTimestamp(nextBlock:Block):boolean {
-        if(nextBlock.timestamp<this.timestamp)  {return false;}
+        if(nextBlock.timestamp<=this.timestamp)  {return false;}
         if(new Date().getTime()<nextBlock.timestamp)  {return false;}
-        return 
+        return true;
     }
     verifyNextBlockNHardBit(nextBlock:Block):boolean {
         const nHardBit = this.getNextBlockNHardBit(nextBlock);
@@ -92,8 +101,8 @@ export default class Block extends BlockBase {
         if(!this.verifyNextBlockHeight(nextBlock)){return false;}
         if(!this.verifyTransactions(nextBlock)){return false;}
         if(!this.verifyNextBlockHash(nextBlock)){return false;}
-        if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}
         if(!this.verifyNextBlockNHardBit(nextBlock)){return false;}
+        if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}
         return true;
     }
 

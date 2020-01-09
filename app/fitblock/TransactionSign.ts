@@ -17,10 +17,16 @@ export default class TransactionSign extends TransactionSignBase {
             s:BigInt(`0x${signList[1]}`)
         }
     }
-    isSame(transactionSign:TransactionSignBase):boolean {
+    isSame(transactionSign:TransactionSign):boolean {
         if(this.signString!==transactionSign.signString) {return false}
         if(!this.transaction.isSame(transactionSign.transaction)) {return false}
         return true
+    }
+    static createByData(transactionSignData: any): TransactionSign {
+        const newTransaction = Transaction.createByData(transactionSignData.transaction)
+        const newTransactionSign = new TransactionSign(newTransaction)
+        Object.assign(newTransactionSign, transactionSignData);
+        return newTransactionSign;
     }
     sign(privateKey: string):string {
         const transactionHash = createHash('sha256').update(this.transaction.serialize()).digest('hex');

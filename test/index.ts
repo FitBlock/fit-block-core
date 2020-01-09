@@ -20,7 +20,7 @@ const testUnit = {
         ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'genGodBlock workerAddress error!')
         ok(godBlock.height === 0,'genGodBlock height error!')
         ok(godBlock.transactionSigns.length === 0,'genGodBlock transactionSigns error!')
-        ok(godBlock.blockVal.length === 128,'genGodBlock blockVal error!')
+        ok(godBlock.blockVal.length === fitBlock.getConfig().initBlockValLen,'genGodBlock blockVal error!')
         ok(godBlock.nextBlockHash.length === 64,'genGodBlock nextBlockHash error!')
         ok(godBlock.timestamp > 1578000000000,'genGodBlock timestamp error!')
     },
@@ -111,8 +111,8 @@ const testUnit = {
         )
     },
     [Symbol('test.mining')] : async function() {
-        // todo
-        // const nextBlock = await fitBlock.mining();
+        const nextBlock = await fitBlock.mining();
+        ok(godBlock.verifyNextBlock(nextBlock),'mining error!')
     },
 }
 

@@ -16,4 +16,13 @@ export default class Transaction extends TransactionBase {
     isSame(transaction:Transaction):boolean {
         return this.serialize()===transaction.serialize()
     }
+    static createByData(transactionData: any): Transaction {
+        const newTransaction = new Transaction(
+            transactionData.senderAdress,
+            transactionData.accepterAdress,
+            transactionData.transCoinNumber,
+        )
+        Object.assign(newTransaction, transactionData);
+        return newTransaction
+    }
 }

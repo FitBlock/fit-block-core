@@ -29,7 +29,7 @@ export default abstract class BlockBase {
 
     abstract isSame(block:BlockBase):boolean;
 
-    abstract outBlock(nextBlockVal: string, walletAdress: string): void;
+    abstract outBlock(newBlock: BlockBase): BlockBase;
 
     abstract getCoinNumByWalletAdress(walletAdress: string): number;
 

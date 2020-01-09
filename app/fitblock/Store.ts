@@ -32,8 +32,8 @@ export default class Store extends StoreBase {
 
     async getBlockData(blockHash:string):Promise<Block> {
         try {
-            const dataStr = await this.get(this.getBlockDataKey(blockHash)) || '{}';
-            return JSON.parse(dataStr);
+            const dataStr = await this.get(this.getBlockDataKey(blockHash));
+            return Block.createByData(JSON.parse(dataStr));
         } catch(err) {
             return new Block('', -1);
         }
@@ -46,20 +46,20 @@ export default class Store extends StoreBase {
         return await this.put(this.getBlockDataKey(blockHash), block);
     }
 
-    async blockIterator(blockData:Block=new Block('',-1)): Promise<AsyncIterable<Block>> {
-        if(blockData.height===-1) {
-            blockData = await this.getBlockData(this.getGodKey());
+    async blockIterator(nowBlock:Block=new Block('',-1)): Promise<AsyncIterable<Block>> {
+        if(nowBlock.height===-1) {
+            nowBlock = await this.getBlockData(this.getGodKey());
         }
         return {
             [Symbol.asyncIterator]:()=> {
                 return {
                     next:async ()=>{
-                        if(!blockData.nextBlockHash) {
-                            return {value: blockData, done: true}
+                        if(!nowBlock.nextBlockHash) {
+                            return {value: nowBlock, done: true}
                         }
-                        const nextBlock = await this.getBlockData(blockData.nextBlockHash)
-                        const preBlock = blockData;
-                        blockData = nextBlock;
+                        const nextBlock = await this.getBlockData(nowBlock.nextBlockHash)
+                        const preBlock = nowBlock;
+                        nowBlock = nextBlock;
                         return {value: preBlock, done: false}
                     }
                 }

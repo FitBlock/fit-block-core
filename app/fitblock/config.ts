@@ -1,6 +1,7 @@
 export default {
     appName:'fitblock',
-    initBlockValLen:128,
+    initBlockValLen:64,
+    blockValRadix:16,
     minHardBit:2,
     maxHardBit:32,
     incrHardBitTime:600*1000, //unit：ms
