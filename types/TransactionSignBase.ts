@@ -8,5 +8,6 @@ export default abstract class TransactionSignBase {
         this.inBlockHash = '';
     }
     abstract sign(privateKey: string):string;
+    abstract isSame(transactionSign:TransactionSignBase):boolean;
     abstract verify():boolean;
 }

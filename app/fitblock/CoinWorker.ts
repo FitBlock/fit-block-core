@@ -23,10 +23,10 @@ export default class CoinWorker extends CoinWorkerBase {
         return newBlock;
     }
     async addTransactionInBlock(nextBlockHash:string ,newBlock: Block): Promise<Block> {
-        myStore.eachTransactionSignData(async (transactionSign)=>{
+        for await (const transactionSign of await myStore.transactionSignIterator()) {
             transactionSign.inBlockHash = nextBlockHash;
             newBlock.transactionSigns.push(transactionSign)
-        })
+        }
         return newBlock;
     }
     

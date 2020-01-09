@@ -12,6 +12,22 @@ export default class Block extends BlockBase {
     addTransaction(transactionSign: TransactionSign) {
         this.transactionSigns.push(transactionSign);
     }
+    
+    isTransactionSignIn(transactionSign:TransactionSign) {
+        let isInBlock = false;
+        for(const blockTransactionSign of this.transactionSigns) {
+            if(blockTransactionSign.isSame(transactionSign)) {
+                isInBlock = true;
+                break;
+            }
+        }
+        return isInBlock;
+    }
+
+    isSame(block:Block): boolean {
+        if(this.serialize()!==block.serialize()){return false;}
+        return true;
+    }
 
     outBlock(nextBlockVal: string): void {
         this.blockVal = nextBlockVal;

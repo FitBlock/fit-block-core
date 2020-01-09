@@ -27,7 +27,13 @@ export default abstract class BlockBase {
 
     abstract verifyNextBlock(nextBlock:BlockBase):boolean;
 
+    abstract isSame(block:BlockBase):boolean;
+
     abstract outBlock(nextBlockVal: string, walletAdress: string): void;
 
     abstract getCoinNumByWalletAdress(walletAdress: string): number;
+
+    serialize() {
+        return JSON.stringify(this);
+    }
 }

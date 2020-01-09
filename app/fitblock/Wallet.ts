@@ -26,12 +26,12 @@ export default class Wallet extends WalletBase {
     }
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         let coinNum = 0;
-        await myStore.eachBlockData(async (blockData)=>{
-            coinNum+=blockData.getCoinNumByWalletAdress(walletAdress);
+        for await (const block of await myStore.blockIterator()) {
+            coinNum+=block.getCoinNumByWalletAdress(walletAdress);
             if(coinNum<0) {
                 throw new Error("wallet coin number not be minus");
             }
-        })
+        }
         return coinNum;
     }
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {

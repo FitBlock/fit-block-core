@@ -112,7 +112,7 @@ const testUnit = {
     },
     [Symbol('test.mining')] : async function() {
         // todo
-        // const nextBlock = fitBlock.mining();
+        // const nextBlock = await fitBlock.mining();
     },
 }
 

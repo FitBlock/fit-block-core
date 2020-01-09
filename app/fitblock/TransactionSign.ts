@@ -17,6 +17,11 @@ export default class TransactionSign extends TransactionSignBase {
             s:BigInt(`0x${signList[1]}`)
         }
     }
+    isSame(transactionSign:TransactionSignBase):boolean {
+        if(this.signString!==transactionSign.signString) {return false}
+        if(!this.transaction.isSame(transactionSign.transaction)) {return false}
+        return true
+    }
     sign(privateKey: string):string {
         const transactionHash = createHash('sha256').update(this.transaction.serialize()).digest('hex');
         const signData = ecdsa.sign(`0x${privateKey}`,`0x${transactionHash}`);

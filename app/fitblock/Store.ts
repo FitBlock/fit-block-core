@@ -5,7 +5,7 @@ import TransactionSign from './TransactionSign';
 
 export const getStoreInstance = ( ()=> {
     let instance = null;
-    return ()=>{
+    return ():Store=>{
         if(instance) {
             return instance;
         }
@@ -23,10 +23,10 @@ export default class Store extends StoreBase {
     }
 
     async getLastBlockData():Promise<Block> {
-        let lastBlock = new Block('', -1);
-        await this.eachBlockData(async (blockData)=>{
-            lastBlock = blockData;
-        })
+        let lastBlock = new Block('', -1);  
+        for await (const block of await this.blockIterator()) {
+            lastBlock = block;
+        }
         return lastBlock;
     }
 
@@ -46,15 +46,25 @@ export default class Store extends StoreBase {
         return await this.put(this.getBlockDataKey(blockHash), block);
     }
 
-    async eachBlockData(callback?:(block:Block)=>Promise<void>):Promise<boolean> {
-        const readBlock = async (blockData) => {
-            if(!blockData.nextBlockHash) {return;}
-            await callback(blockData);
-            await readBlock(await this.getBlockData(blockData.nextBlockHash));
+    async blockIterator(blockData:Block=new Block('',-1)): Promise<AsyncIterable<Block>> {
+        if(blockData.height===-1) {
+            blockData = await this.getBlockData(this.getGodKey());
         }
-        let godBlockData = await this.getBlockData(this.getGodKey());
-        await readBlock(godBlockData);
-        return true;
+        return {
+            [Symbol.asyncIterator]:()=> {
+                return {
+                    next:async ()=>{
+                        if(!blockData.nextBlockHash) {
+                            return {value: blockData, done: true}
+                        }
+                        const nextBlock = await this.getBlockData(blockData.nextBlockHash)
+                        const preBlock = blockData;
+                        blockData = nextBlock;
+                        return {value: preBlock, done: false}
+                    }
+                }
+            }
+        };
     }
 
     getTransactionSignDataKey(transactionSign:TransactionSign): string {
@@ -63,6 +73,17 @@ export default class Store extends StoreBase {
 
     getTransactionSignMapSize():number {
         return this.transactionSignMap.size;
+    }
+
+    async checkIsTransactionSignInBlock(transactionSign:TransactionSign):Promise<boolean> {
+        let isInBlock = false;
+        for await (const block of await this.blockIterator()) {
+            if(block.isTransactionSignIn(transactionSign)) {
+                isInBlock = true;
+                break;
+            }
+        }
+        return isInBlock
     }
 
     async delTransactionSignData(transactionSign:TransactionSign):Promise<boolean> {
@@ -79,11 +100,20 @@ export default class Store extends StoreBase {
         )
         return true;
     }
-
-    async eachTransactionSignData(callback?:(transactionSign:TransactionSign)=>Promise<void>):Promise<boolean> {
-        for(const transactionSignData of this.transactionSignMap) {
-            await callback(transactionSignData[1]);
+    async transactionSignIterator(): Promise<AsyncIterable<TransactionSign>> {
+        const transactionSignMapIterator = this.transactionSignMap[Symbol.iterator]();
+        return {
+            [Symbol.asyncIterator]:()=> {
+                return {
+                    next:async ()=>{
+                        const res = transactionSignMapIterator.next();
+                        if(res.value && res.value.length===2) {
+                            return {value:res.value[1], done: res.done}
+                        }
+                        return {value:undefined, done: res.done}
+                    }
+                }
+            }
         }
-        return true;
     }
 }

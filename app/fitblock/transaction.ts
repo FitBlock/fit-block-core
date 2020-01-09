@@ -13,4 +13,7 @@ export default class Transaction extends TransactionBase {
     getTradingFees():number {
         return Math.ceil(this.transCoinNumber*config.transactionRate);
     }
+    isSame(transaction:Transaction):boolean {
+        return this.serialize()===transaction.serialize()
+    }
 }

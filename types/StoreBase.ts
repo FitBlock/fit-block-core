@@ -16,7 +16,7 @@ export default  abstract class StoreBase{
 
     abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
 
-    abstract async eachBlockData(callback?:(block:BlockBase)=>Promise<void>):Promise<boolean>;
+    abstract async blockIterator(blockData:BlockBase): Promise<AsyncIterable<BlockBase>>;
 
     abstract  getTransactionSignMapSize():number;
 
@@ -24,9 +24,11 @@ export default  abstract class StoreBase{
 
     abstract delTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 
+    abstract async checkIsTransactionSignInBlock(transactionSign:TransactionSignBase):Promise<boolean>;
+
     abstract async keepTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 
-    abstract async eachTransactionSignData(callback?:(transactionSign:TransactionSignBase)=>Promise<void>):Promise<boolean>;
+    abstract async transactionSignIterator(): Promise<AsyncIterable<TransactionSignBase>>;
 
     private checkAppName(appName:string):boolean {
         if(!(/^[a-z]{1}[a-z0-9_-]{1,30}$/u).test(appName)) {

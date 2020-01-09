@@ -71,15 +71,18 @@ export default class FitBlock extends AppBase {
     //  优先同步区块，传播未成块的交易数据
     async sendTransaction():Promise<Array<TransactionSign>> {
         const transactionSignList = [];
-        await myStore.eachTransactionSignData(async (transactionSign)=>{
+        for await (const transactionSign of await myStore.transactionSignIterator()) {
             transactionSignList.push(transactionSign)
-        })
+        }
         return transactionSignList;
     }
     async acceptTransaction(transactionSign:TransactionSign):Promise<TransactionSign> {
-        const inBlockTransactionSign = await myStore.getInBlockTransactionSignData(transactionSign);
-        if(inBlockTransactionSign) {
-            return inBlockTransactionSign;
+        if(myStore.getTransactionSignMapSize()>config.maxBlockTransactionSize) {
+            throw `transactionSign is enough`
+        }
+        const isInBlockTransactionSign = await myStore.keepTransactionSignData(transactionSign);
+        if(isInBlockTransactionSign) {
+            throw `transactionSign is already in block`
         }
         if(!transactionSign.verify()) {
             throw `nextBlock not pass verify`
