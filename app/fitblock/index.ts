@@ -15,7 +15,7 @@ export default class FitBlock extends AppBase {
         this.name = config.appName;
     }
 
-    getConfig():any {
+    getConfig() {
         return config;
     }
 
