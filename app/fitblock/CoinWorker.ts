@@ -5,10 +5,9 @@ import {sleep} from './util/index'
 import {getStoreInstance} from './Store'
 const myStore = getStoreInstance();
 export default class CoinWorker extends CoinWorkerBase {
-    async mining(): Promise<Block> {
-        let preBlock = await myStore.getLastBlockData();
+    async mining(preBlock:Block): Promise<Block> {
         const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
-        let startBigInt = -1n;
+        let startBigInt = 0n;
         let nextBlockHash = preBlock.nextBlockHash;
         await this.addTransactionInBlock(nextBlockHash, newBlock);
         do {

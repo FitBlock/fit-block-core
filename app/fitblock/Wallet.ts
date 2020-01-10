@@ -28,6 +28,9 @@ export default class Wallet extends WalletBase {
         let coinNum = 0;
         for await (const block of await myStore.blockIterator()) {
             coinNum+=block.getCoinNumByWalletAdress(walletAdress);
+            if(coinNum===Infinity) {
+                throw new Error("wallet coin number have range");
+            }
             if(coinNum<0) {
                 throw new Error("wallet coin number not be minus");
             }

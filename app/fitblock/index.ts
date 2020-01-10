@@ -20,10 +20,9 @@ export default class FitBlock extends AppBase {
     }
 
     async genGodBlock():Promise<Block> {
-        const godBlock = new Block(config.godWalletAdress, 0);
+        const godBlock = new Block(config.godWalletAdress, config.godBlockHeight);
         godBlock.blockVal = getRandHexNumByDigit(config.initBlockValLen, config.blockValRadix);
         godBlock.outBlock(godBlock);
-        await myStore.keepBlockData(myStore.getGodKey(),godBlock)
         return godBlock;
     }
 
@@ -31,8 +30,16 @@ export default class FitBlock extends AppBase {
         return myStore.getGodKey();
     }
 
+    async keepGodBlockData(godBlock:Block):Promise<boolean> {
+        return await myStore.keepBlockData(myStore.getGodKey(),godBlock)
+    }
+
     async loadGodBlock():Promise<Block> {
         return await myStore.getBlockData(myStore.getGodKey());
+    }
+
+    async keepBlockData(blockHash:string ,block:Block):Promise<boolean> {
+        return await myStore.keepBlockData(blockHash,block)
     }
 
     async loadLastBlockData():Promise<Block> {
@@ -57,12 +64,15 @@ export default class FitBlock extends AppBase {
 
     async genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):Promise<TransactionSign> {
         const transactionSign= myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
-        await myStore.keepTransactionSignData(transactionSign);
         return transactionSign;
     }
 
-    async mining(): Promise<Block> {
-        return await myCoinWorker.mining();
+    async keepTransaction(transactionSign:TransactionSign):Promise<Boolean> {
+        return await myStore.keepTransactionSignData(transactionSign);
+    }
+
+    async mining(preBlock:Block): Promise<Block> {
+        return await myCoinWorker.mining(preBlock);
     }
 
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
@@ -81,27 +91,25 @@ export default class FitBlock extends AppBase {
         if(myStore.getTransactionSignMapSize()>config.maxBlockTransactionSize) {
             throw `transactionSign is enough`
         }
-        const isInBlockTransactionSign = await myStore.keepTransactionSignData(transactionSign);
+        const isInBlockTransactionSign = await myStore.checkIsTransactionSignInBlock(transactionSign);
         if(isInBlockTransactionSign) {
             throw `transactionSign is already in block`
         }
         if(!transactionSign.verify()) {
             throw `nextBlock not pass verify`
         }
-        await myStore.keepTransactionSignData(transactionSign);
         return transactionSign;
     }
     // 通过区块hash值获取要发送的区块
     async sendBlockByHash(blockHash: string): Promise<Block> {
         return await myStore.getBlockData(blockHash);;
     }
-    // 接收区块数据,并标记在块中已交易的交易数据为交易成功
-    async acceptBlock(blockHash: string, nextblock: Block): Promise<string> {
+    // 接收区块数据
+    async acceptBlock(blockHash: string, nextblock: Block): Promise<Block> {
         const lastBlock = await myStore.getBlockData(blockHash);
         if(!lastBlock.verifyNextBlock(nextblock)) {
             throw `nextBlock not pass verify`
         }
-        await myStore.keepBlockData(blockHash, nextblock)
-        return nextblock.nextBlockHash;
+        return nextblock;
     }
 }

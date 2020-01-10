@@ -4,6 +4,7 @@ import {base582Hex} from './util/base58';
 import ecdsa from 'ecdsa-secp256k1';
 import {createHash} from 'crypto';
 export default class TransactionSign extends TransactionSignBase {
+    transaction:Transaction;
     constructor(transaction:Transaction) {
         super(transaction);
     }
@@ -23,8 +24,8 @@ export default class TransactionSign extends TransactionSignBase {
         return true
     }
     static createByData(transactionSignData: any): TransactionSign {
-        const newTransaction = Transaction.createByData(transactionSignData.transaction)
-        const newTransactionSign = new TransactionSign(newTransaction)
+        transactionSignData.transaction = Transaction.createByData(transactionSignData.transaction)
+        const newTransactionSign = new TransactionSign(transactionSignData.transaction)
         Object.assign(newTransactionSign, transactionSignData);
         return newTransactionSign;
     }

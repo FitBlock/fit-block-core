@@ -5,7 +5,9 @@ export default abstract class AppBase{
     abstract getConfig():any;
     abstract async genGodBlock():Promise<BlockBase>;
     abstract getGodBlockHash():string;
+    abstract async keepGodBlockData(godBlock:BlockBase):Promise<boolean>
     abstract async loadGodBlock():Promise<BlockBase>;
+    abstract async keepBlockData(blockHash:string ,block:BlockBase):Promise<boolean>;
     abstract async loadLastBlockData():Promise<BlockBase>;
     abstract genPrivateKeyByString(data: string): string;
     abstract genPrivateKeyByRand(): string;
@@ -13,6 +15,7 @@ export default abstract class AppBase{
     abstract getWalletAdressByPublicKey(publicKey: string): string;
     abstract getPublicKeyByWalletAdress(walletAdress: string): string;
     abstract async genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):Promise<TransactionSignBase>;
+    abstract async keepTransaction(transactionSign:TransactionSignBase):Promise<Boolean>;
     abstract async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number>
     //  优先同步区块，传播未成块的交易数据
     abstract async sendTransaction():Promise<Array<TransactionSignBase>>
@@ -21,7 +24,7 @@ export default abstract class AppBase{
     // 通过区块hash值发送区块
     abstract async sendBlockByHash(blockHash: string): Promise<BlockBase>;
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
-    abstract async acceptBlock(blockHash: string, nextblock: BlockBase): Promise<string>;
+    abstract async acceptBlock(blockHash: string, nextblock: BlockBase): Promise<BlockBase>;
 
-    abstract async mining(): Promise<BlockBase>;
+    abstract async mining(preBlock:BlockBase): Promise<BlockBase>;
 } 

@@ -23,7 +23,7 @@ export default class Store extends StoreBase {
     }
 
     async getLastBlockData():Promise<Block> {
-        let lastBlock = new Block('', -1);  
+        let lastBlock = new Block('', config.godBlockHeight-1);  
         for await (const block of await this.blockIterator()) {
             lastBlock = block;
         }
@@ -35,7 +35,7 @@ export default class Store extends StoreBase {
             const dataStr = await this.get(this.getBlockDataKey(blockHash));
             return Block.createByData(JSON.parse(dataStr));
         } catch(err) {
-            return new Block('', -1);
+            return new Block('', config.godBlockHeight-1);
         }
     }
 
@@ -46,8 +46,8 @@ export default class Store extends StoreBase {
         return await this.put(this.getBlockDataKey(blockHash), block);
     }
 
-    async blockIterator(nowBlock:Block=new Block('',-1)): Promise<AsyncIterable<Block>> {
-        if(nowBlock.height===-1) {
+    async blockIterator(nowBlock:Block=new Block('',config.godBlockHeight-1)): Promise<AsyncIterable<Block>> {
+        if(nowBlock.height===config.godBlockHeight-1) {
             nowBlock = await this.getBlockData(this.getGodKey());
         }
         return {

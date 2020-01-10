@@ -16,13 +16,16 @@ const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
         godBlock =  await fitBlock.genGodBlock();
         ok(godBlock,'genGodBlock error!');
-        ok(godBlock.nHardBit === 2,'genGodBlock nHardBit error!')
+        ok(godBlock.nHardBit === config.minHardBit,'genGodBlock nHardBit error!')
         ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'genGodBlock workerAddress error!')
-        ok(godBlock.height === 0,'genGodBlock height error!')
+        ok(godBlock.height === config.godBlockHeight,'genGodBlock height error!')
         ok(godBlock.transactionSigns.length === 0,'genGodBlock transactionSigns error!')
         ok(godBlock.blockVal.length === fitBlock.getConfig().initBlockValLen,'genGodBlock blockVal error!')
         ok(godBlock.nextBlockHash.length === 64,'genGodBlock nextBlockHash error!')
         ok(godBlock.timestamp > 1578000000000,'genGodBlock timestamp error!')
+    },
+    [Symbol('test.keepGodBlockData')] : async function() {
+        ok(await fitBlock.keepGodBlockData(godBlock),'keepGodBlockData error!')
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const loadGodBlock = await fitBlock.loadGodBlock();
@@ -72,14 +75,14 @@ const testUnit = {
             'getPublicKeyByWalletAdress error!'
         )
     },
-    [Symbol('test.genTransaction')] : async function() {
+    [Symbol('test.genTransaction && test.keepTransaction')] : async function() {
         const privateKey = fitBlock.genPrivateKeyByString('123456');
         const accepterPublicKey = fitBlock.getPublicKeyByPrivateKey(
             fitBlock.genPrivateKeyByString('654321')
         )
         const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
         const transactionSign = await fitBlock.genTransaction(
-            privateKey, accepterAdress, 2
+            privateKey, accepterAdress, config.initOutBlockCoinNum
         );
         ok(
             transactionSign.transaction.
@@ -93,7 +96,7 @@ const testUnit = {
         )
         ok(
             transactionSign.transaction.
-            transCoinNumber === 2,
+            transCoinNumber === config.initOutBlockCoinNum,
             'genTransaction.transaction.transCoinNumber error!'
         )
         ok(
@@ -109,10 +112,23 @@ const testUnit = {
             transactionSign.signString.split(',').length ===2,
             'genTransaction.transaction.signString error!'
         )
+        ok(await fitBlock.keepTransaction(transactionSign),'test.keepTransaction error!')
     },
-    [Symbol('test.mining')] : async function() {
-        const nextBlock = await fitBlock.mining();
+    [Symbol('test.mining && test.keepBlockData')] : async function() {
+        const nextBlock = await fitBlock.mining(godBlock);
         ok(godBlock.verifyNextBlock(nextBlock),'mining error!')
+        ok(await fitBlock.keepBlockData(godBlock.nextBlockHash, nextBlock),'keepBlockData error!')
+    },
+    [Symbol('test.getCoinNumberyByWalletAdress')] : async function() {
+        const testAdressCoinNumber = await fitBlock.getCoinNumberyByWalletAdress(testWalletAdress);
+        const accepterPublicKey = fitBlock.getPublicKeyByPrivateKey(
+            fitBlock.genPrivateKeyByString('654321')
+        )
+        const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
+        const accepterAdressCoinNumber  = await fitBlock.getCoinNumberyByWalletAdress(accepterAdress);
+        const transactionCoinNumber = Math.ceil(config.initOutBlockCoinNum*config.transactionRate);
+        ok(testAdressCoinNumber=== config.initOutBlockCoinNum + transactionCoinNumber
+            && accepterAdressCoinNumber=== config.initOutBlockCoinNum - transactionCoinNumber,'getCoinNumberyByWalletAdress error!')
     },
 }
 

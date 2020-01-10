@@ -31,6 +31,9 @@ export default class Block extends BlockBase {
 
     static createByData(blockData:any): Block {
         const newBlock = new Block(blockData.workerAddress,blockData.height)
+        for(let i=0;i<blockData.transactionSigns.length;i++) {
+            blockData.transactionSigns[i] = TransactionSign.createByData(blockData.transactionSigns[i])
+        }
         Object.assign(newBlock, blockData);
         return newBlock;
     }
@@ -38,7 +41,7 @@ export default class Block extends BlockBase {
     outBlock(newBlock: Block): Block {
         newBlock.nextBlockHash = newBlock.genBlockHash();
         newBlock.timestamp = new Date().getTime();
-        if(newBlock.height>0) {
+        if(newBlock.height>config.godBlockHeight) {
             newBlock.nHardBit = this.getNextBlockNHardBit(newBlock)
         }
         return newBlock;
@@ -64,6 +67,9 @@ export default class Block extends BlockBase {
     }
 
     verifyNextBlockVal(nextBlock:Block):boolean {
+        if(BigInt(`0x${nextBlock.blockVal}`)<BigInt(config.minblockVal)) {
+            return false;
+        }
         const nextBlockHash = nextBlock.genBlockHash();
         const originVerify = this.nextBlockHash.substring(this.nextBlockHash.length-this.nHardBit);
         const nextVerify = nextBlockHash.substring(0, this.nHardBit);
