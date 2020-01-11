@@ -88,27 +88,32 @@ export default class FitBlock extends AppBase {
         return transactionSignList;
     }
     async acceptTransaction(transactionSign:TransactionSign):Promise<TransactionSign> {
-        if(myStore.getTransactionSignMapSize()>config.maxBlockTransactionSize) {
-            throw `transactionSign is enough`
+        if(await myStore.getTransactionSignMapSize()>config.maxBlockTransactionSize) {
+            throw new Error(`transactionSign is enough`)
         }
-        const isInBlockTransactionSign = await myStore.checkIsTransactionSignInBlock(transactionSign);
-        if(isInBlockTransactionSign) {
-            throw `transactionSign is already in block`
+        if(await myStore.checkIsTransactionSignInMap(transactionSign)) {
+            throw new Error(`transactionSign is already exist`)
+        }
+        if(await myStore.checkIsTransactionSignInBlock(transactionSign)) {
+            throw new Error(`transactionSign is already in block`)
         }
         if(!transactionSign.verify()) {
-            throw `nextBlock not pass verify`
+            throw new Error(`nextBlock not pass verify`)
         }
         return transactionSign;
     }
     // 通过区块hash值获取要发送的区块
     async sendBlockByHash(blockHash: string): Promise<Block> {
-        return await myStore.getBlockData(blockHash);;
+        return await myStore.getBlockData(blockHash);
     }
     // 接收区块数据
     async acceptBlock(blockHash: string, nextblock: Block): Promise<Block> {
-        const lastBlock = await myStore.getBlockData(blockHash);
-        if(!lastBlock.verifyNextBlock(nextblock)) {
-            throw `nextBlock not pass verify`
+        const preBlock = await myStore.getBlockData(blockHash);
+        if(preBlock.height === config.godBlockHeight-1) {
+            throw new Error(`blockhash: ${blockHash} not exist`)
+        }
+        if(!preBlock.verifyNextBlock(nextblock)) {
+            throw new Error(`nextBlock not pass verify`)
         }
         return nextblock;
     }

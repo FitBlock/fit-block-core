@@ -7,6 +7,7 @@ export default {
     maxHardBit:32,
     incrHardBitTime:600*1000, //unit：ms
     godWalletAdress:'SH8ZKQQ8NMwNt2i2GKdPRGjnpZdDXEfFf5foCJmfwtcp7jeMYSMw3eM4mueZdYjKgPyVu8S9tVL76UPLSNgdEbgc',//  this maybe be version
+    godBlockHash:'godBlock',
     godBlockHeight:1,
     selfWalletAdress:'',
     transactionRate:0.001,

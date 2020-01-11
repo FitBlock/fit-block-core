@@ -14,7 +14,7 @@ const runBefore = {
 }
 const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
-        godBlock =  await fitBlock.genGodBlock();
+        godBlock = await fitBlock.genGodBlock();
         ok(godBlock,'genGodBlock error!');
         ok(godBlock.nHardBit === config.minHardBit,'genGodBlock nHardBit error!')
         ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'genGodBlock workerAddress error!')
@@ -26,6 +26,9 @@ const testUnit = {
     },
     [Symbol('test.keepGodBlockData')] : async function() {
         ok(await fitBlock.keepGodBlockData(godBlock),'keepGodBlockData error!')
+    },
+    [Symbol('test.getGodBlockHash')] : async function() {
+        ok(fitBlock.getGodBlockHash() === fitBlock.getConfig().godBlockHash,'getGodBlockHash error!')
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const loadGodBlock = await fitBlock.loadGodBlock();
@@ -130,6 +133,56 @@ const testUnit = {
         ok(testAdressCoinNumber=== config.initOutBlockCoinNum + transactionCoinNumber
             && accepterAdressCoinNumber=== config.initOutBlockCoinNum - transactionCoinNumber,'getCoinNumberyByWalletAdress error!')
     },
+    [Symbol('test.sendTransaction')] : async function() {
+        const emptyTransactionList = await fitBlock.sendTransaction();
+        ok(emptyTransactionList.length===0,'sendTransaction.notEmpty error!')
+        const privateKey = fitBlock.genPrivateKeyByString('123456');
+        const accepterPublicKey = fitBlock.getPublicKeyByPrivateKey(
+            fitBlock.genPrivateKeyByString('654321')
+        )
+        const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
+        const transactionSign = await fitBlock.genTransaction(
+            privateKey, accepterAdress, config.initOutBlockCoinNum
+        );
+        await fitBlock.keepTransaction(transactionSign);
+        const transactionList = await fitBlock.sendTransaction();
+        ok(transactionList.length===1,'sendTransaction error!')
+    },
+    [Symbol('test.acceptTransaction')] : async function() {
+        const privateKey = fitBlock.genPrivateKeyByString('123456');
+        const accepterPublicKey = fitBlock.getPublicKeyByPrivateKey(
+            fitBlock.genPrivateKeyByString('654321')
+        )
+        const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
+        const newTransactionSign = await fitBlock.genTransaction(
+            privateKey, accepterAdress, config.initOutBlockCoinNum
+        );
+        const passTransactionSign = await fitBlock.acceptTransaction(newTransactionSign);
+        ok(passTransactionSign.isSame(newTransactionSign),'acceptTransaction error!');
+        try{
+            await fitBlock.keepTransaction(newTransactionSign);
+            await fitBlock.acceptTransaction(newTransactionSign);
+        } catch(err) {
+            ok(
+                err.message==='transactionSign is already exist',
+                'acceptTransaction.checkIsTransactionSignInMap error!'
+            )
+        }
+        const loadLastBlock = await fitBlock.loadLastBlockData();
+        try{
+            await fitBlock.acceptTransaction(loadLastBlock.transactionSigns[0]);
+        } catch(err) {
+            ok(
+                err.message==='transactionSign is already in block',
+                'acceptTransaction.checkIsTransactionSignInBlock  error!'
+            )
+        }
+    },
+    [Symbol('test.sendBlockByHash && test.acceptBlock')] : async function() {
+        const block = await fitBlock.sendBlockByHash(godBlock.nextBlockHash);
+        const verifyBlock = await fitBlock.acceptBlock(fitBlock.getGodBlockHash(), block)
+        ok(block.isSame(verifyBlock),'test.sendBlockByHash && test.acceptBlock error!');
+    }
 }
 
 const runAfter = {

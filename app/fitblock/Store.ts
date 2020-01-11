@@ -16,7 +16,7 @@ export const getStoreInstance = ( ()=> {
 export default class Store extends StoreBase {
     transactionSignMap = new Map<string, TransactionSign>();
     getGodKey(): string {
-        return `godBlock`;
+        return config.godBlockHash;
     }
     getBlockDataKey(blockHash: string): string {
         return `block:${blockHash}`;
@@ -71,8 +71,19 @@ export default class Store extends StoreBase {
         return `transaction:${transactionSign.transaction.timestamp.toString()}:${transactionSign.signString}`;
     }
 
-    getTransactionSignMapSize():number {
+    async getTransactionSignMapSize():Promise<number> {
         return this.transactionSignMap.size;
+    }
+
+    async checkIsTransactionSignInMap(transactionSign:TransactionSign):Promise<boolean> {
+        let isInMap = false;
+        for (const transactionSignItem of this.transactionSignMap) {
+            if(transactionSignItem[1].isSame(transactionSign)) {
+                isInMap = true;
+                break;
+            }
+        }
+        return isInMap
     }
 
     async checkIsTransactionSignInBlock(transactionSign:TransactionSign):Promise<boolean> {

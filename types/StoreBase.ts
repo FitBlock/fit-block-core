@@ -18,11 +18,13 @@ export default  abstract class StoreBase{
 
     abstract async blockIterator(blockData:BlockBase): Promise<AsyncIterable<BlockBase>>;
 
-    abstract  getTransactionSignMapSize():number;
+    abstract async  getTransactionSignMapSize():Promise<number>;
 
     abstract getTransactionSignDataKey(transactionSign:TransactionSignBase): string;
 
     abstract delTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
+
+    abstract  async checkIsTransactionSignInMap(transactionSign:TransactionSignBase):Promise<boolean>;
 
     abstract async checkIsTransactionSignInBlock(transactionSign:TransactionSignBase):Promise<boolean>;
 
