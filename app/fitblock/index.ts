@@ -1,6 +1,6 @@
 import {getRandHexNumByDigit} from './util/index';
 import Block from './Block';
-import TransactionSign from './transactionSign';
+import TransactionSign from './TransactionSign';
 import AppBase from '../../types/AppBase';
 import config from './config';
 import InstanceFactory from './InstanceFactory';
