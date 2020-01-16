@@ -5,6 +5,7 @@ import AppBase from '../../types/AppBase';
 import config from './config';
 import InstanceFactory from './InstanceFactory';
 import {getStoreInstance} from './Store'
+import Store from './Store'
 const myStore = getStoreInstance();
 const myWallet = InstanceFactory.getWalletInstance();
 const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
@@ -17,6 +18,10 @@ export default class FitBlock extends AppBase {
 
     getConfig() {
         return config;
+    }
+
+    getStore():Store {
+        return myStore;
     }
 
     async genGodBlock():Promise<Block> {

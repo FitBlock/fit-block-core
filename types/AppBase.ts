@@ -1,8 +1,10 @@
 import BlockBase from './BlockBase'
+import StoreBase from './StoreBase'
 import TransactionSignBase from './TransactionSignBase'
 export default abstract class AppBase{
     abstract name: string;
     abstract getConfig():any;
+    abstract getStore():StoreBase;
     abstract async genGodBlock():Promise<BlockBase>;
     abstract getGodBlockHash():string;
     abstract async keepGodBlockData(godBlock:BlockBase):Promise<boolean>
