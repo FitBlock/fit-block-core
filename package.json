@@ -1,6 +1,6 @@
 {
   "name": "fit-block-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stand-alone version of the block program。",
   "main": "build/index.js",
   "directories": {
@@ -30,7 +30,7 @@
   "homepage": "https://github.com/FitBlock/fit-block-core#readme",
   "dependencies": {
     "ecdsa-secp256k1": "^1.0.6",
-    "fit-block-store": "^1.0.0"
+    "fit-block-store": "^1.0.1"
   },
   "devDependencies": {
     "typescript": "^3.7.4",
