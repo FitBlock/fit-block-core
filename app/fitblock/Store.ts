@@ -32,8 +32,7 @@ export default class Store extends StoreBase {
 
     async getBlockData(blockHash:string):Promise<Block> {
         try {
-            const dataStr = await this.get(this.getBlockDataKey(blockHash));
-            return Block.createByData(JSON.parse(dataStr));
+            return Block.createByData(JSON.parse(await this.get(this.getBlockDataKey(blockHash))));
         } catch(err) {
             return new Block('', config.godBlockHeight-1);
         }
@@ -43,7 +42,7 @@ export default class Store extends StoreBase {
         for(const transactionSign of block.transactionSigns) {
             await this.delTransactionSignData(transactionSign);
         }
-        return await this.put(this.getBlockDataKey(blockHash), block);
+        return await this.put(this.getBlockDataKey(blockHash), JSON.stringify(block));
     }
 
     async blockIterator(nowBlock:Block=new Block('',config.godBlockHeight-1)): Promise<AsyncIterable<Block>> {

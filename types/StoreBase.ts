@@ -44,12 +44,12 @@ export default  abstract class StoreBase{
         return await dbClient.conect(this.appName);
     }
 
-    async put(key: string, value:any):Promise<boolean> {
+    async put(key: string, value:string):Promise<boolean> {
         await this.conect();
-        return await dbClient.put(key, JSON.stringify(value));
+        return await dbClient.put(key, value);
     }
 
-    async get(key: string):Promise<any>  {
+    async get(key: string):Promise<string>  {
         await this.conect();
         return await dbClient.get(key);
     }
