@@ -76,8 +76,8 @@ export default class FitBlock extends AppBase {
         return await myStore.keepTransactionSignData(transactionSign);
     }
 
-    async mining(preBlock:Block): Promise<Block> {
-        return await myCoinWorker.mining(preBlock);
+    async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
+        return await myCoinWorker.mining(preBlock, range);
     }
 
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
