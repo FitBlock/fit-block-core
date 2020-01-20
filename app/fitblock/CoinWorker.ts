@@ -12,14 +12,22 @@ export default class CoinWorker extends CoinWorkerBase {
         }
         let startBigInt = range[0];
         let nextBlockHash = preBlock.nextBlockHash;
+        let PowValueMax = 0n;
+        let PowValueMaxBlockVal;
         await this.addTransactionInBlock(nextBlockHash, newBlock);
         do {
             await sleep(10) // 这里是为了尽可能不影响其他异步任务，为异步任务分片
             startBigInt++;
             newBlock.blockVal = startBigInt.toString(config.blockValRadix);
             // feture support pool
+            const newPowValue  = preBlock.getNextBlockValPowValue(newBlock);
+            if(newPowValue>PowValueMax) {
+                PowValueMax = newPowValue;
+                PowValueMaxBlockVal = newBlock.blockVal;
+            }
             if(range[1]>0n && startBigInt>range[1]){break;}
         } while(!(preBlock.verifyNextBlockVal(newBlock)));
+        if(PowValueMaxBlockVal) {newBlock.blockVal = PowValueMaxBlockVal;}
         return preBlock.outBlock(newBlock);
     }
     async addTransactionInBlock(nextBlockHash:string ,newBlock: Block): Promise<Block> {

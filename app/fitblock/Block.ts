@@ -66,14 +66,35 @@ export default class Block extends BlockBase {
         return true;
     }
 
+    getNextBlockHashVerify(nextBlock:Block):{originVerify:string,nextVerify:string} {
+        const nextBlockHash = nextBlock.genBlockHash();
+        const originVerify = this.nextBlockHash.substring(this.nextBlockHash.length-this.nHardBit);
+        const nextVerify = nextBlockHash.substring(0, this.nHardBit);
+        return {
+            originVerify,nextVerify
+        }
+    }
+
+    getNextBlockValPowValue(nextBlock:Block):bigint {
+        let powValue = 0n;
+        if(this.blockVal===nextBlock.blockVal) {return powValue;}
+        const blockHashVerify =  this.getNextBlockHashVerify(nextBlock);
+        for(let i=0;i<blockHashVerify.nextVerify.length;i++) {
+            if(blockHashVerify.nextVerify[i]!=blockHashVerify.originVerify[i]) {
+                break;
+            }
+            powValue+=BigInt(i+1)**config.powIndex;
+        }
+        return powValue;
+    }
+
     verifyNextBlockVal(nextBlock:Block):boolean {
         if(BigInt(`0x${nextBlock.blockVal}`)<BigInt(config.minblockVal)) {
             return false;
         }
-        const nextBlockHash = nextBlock.genBlockHash();
-        const originVerify = this.nextBlockHash.substring(this.nextBlockHash.length-this.nHardBit);
-        const nextVerify = nextBlockHash.substring(0, this.nHardBit);
-        if(originVerify!==nextVerify) {return false;}
+        if(this.blockVal===nextBlock.blockVal) {return false;}
+        const blockHashVerify =  this.getNextBlockHashVerify(nextBlock);
+        if(blockHashVerify.originVerify!==blockHashVerify.nextVerify) {return false;}
         return true;
     }
     verifyNextBlockHash(nextBlock:Block):boolean {

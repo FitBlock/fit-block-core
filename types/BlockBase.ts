@@ -17,7 +17,9 @@ export default abstract class BlockBase {
 
     abstract genBlockHash():string;
 
+    abstract getNextBlockValPowValue(nextBlock:BlockBase):bigint;
     abstract getNextBlockNHardBit(nextBlock:BlockBase):number;
+
     abstract verifyNextBlockHeight(nextBlock:BlockBase): boolean;
     abstract verifyTransactions(nextBlock:BlockBase): boolean;
     abstract verifyNextBlockVal(nextBlock:BlockBase):boolean;
