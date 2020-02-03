@@ -15,7 +15,7 @@ export default class FitBlock extends AppBase {
         super();
         this.name = config.appName;
     }
-
+    
     getConfig() {
         return config;
     }
@@ -29,6 +29,10 @@ export default class FitBlock extends AppBase {
         godBlock.blockVal = getRandHexNumByDigit(config.initBlockValLen, config.blockValRadix);
         godBlock.outBlock(godBlock);
         return godBlock;
+    }
+
+    verifyGodBlock(godBlock:Block):boolean {
+     return godBlock.verifyGodBlock(godBlock);
     }
 
     getGodBlockHash():string {
@@ -113,6 +117,9 @@ export default class FitBlock extends AppBase {
     }
     // 接收区块数据
     async acceptBlock(blockHash: string, nextblock: Block): Promise<Block> {
+        if(blockHash==='' && this.verifyGodBlock(nextblock)) {
+            return nextblock;
+        }
         const preBlock = await myStore.getBlockData(blockHash);
         if(preBlock.height === config.godBlockHeight-1) {
             throw new Error(`blockhash: ${blockHash} not exist`)

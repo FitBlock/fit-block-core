@@ -133,6 +133,17 @@ export default class Block extends BlockBase {
         return true;
     }
 
+    verifyGodBlock(godBlock:Block):boolean {
+        if(godBlock.nHardBit !== config.minHardBit) {return false;}
+        if(godBlock.workerAddress !== config.godWalletAdress) {return false;}
+        if(godBlock.height !== config.godBlockHeight) {return false;}
+        if(godBlock.transactionSigns.length !== 0) {return false;}
+        if(godBlock.blockVal.length !== config.initBlockValLen) {return false;}
+        if(godBlock.nextBlockHash.length !== 64) {return false;}
+        if(godBlock.timestamp <= 1578000000000) {return false;}
+        return true;
+    }
+
     getCoinNumByWalletAdress(walletAdress: string): number {
         let coinNum = 0;
         if(walletAdress===this.workerAddress) {

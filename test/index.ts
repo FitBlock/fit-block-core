@@ -15,14 +15,7 @@ const runBefore = {
 const testUnit = {
     [Symbol('test.genGodBlock')] : async function() {
         godBlock = await fitBlock.genGodBlock();
-        ok(godBlock,'genGodBlock error!');
-        ok(godBlock.nHardBit === config.minHardBit,'genGodBlock nHardBit error!')
-        ok(godBlock.workerAddress === fitBlock.getConfig().godWalletAdress,'genGodBlock workerAddress error!')
-        ok(godBlock.height === config.godBlockHeight,'genGodBlock height error!')
-        ok(godBlock.transactionSigns.length === 0,'genGodBlock transactionSigns error!')
-        ok(godBlock.blockVal.length === fitBlock.getConfig().initBlockValLen,'genGodBlock blockVal error!')
-        ok(godBlock.nextBlockHash.length === 64,'genGodBlock nextBlockHash error!')
-        ok(godBlock.timestamp > 1578000000000,'genGodBlock timestamp error!')
+        ok(fitBlock.verifyGodBlock(godBlock),'genGodBlock error!');
     },
     [Symbol('test.keepGodBlockData')] : async function() {
         ok(await fitBlock.keepGodBlockData(godBlock),'keepGodBlockData error!')

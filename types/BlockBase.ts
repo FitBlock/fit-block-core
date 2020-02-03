@@ -29,6 +29,8 @@ export default abstract class BlockBase {
 
     abstract verifyNextBlock(nextBlock:BlockBase):boolean;
 
+    abstract verifyGodBlock(godBlock:BlockBase):boolean 
+
     abstract isSame(block:BlockBase):boolean;
 
     abstract outBlock(newBlock: BlockBase): BlockBase;

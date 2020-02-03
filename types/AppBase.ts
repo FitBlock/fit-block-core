@@ -6,6 +6,7 @@ export default abstract class AppBase{
     abstract getConfig():any;
     abstract getStore():StoreBase;
     abstract async genGodBlock():Promise<BlockBase>;
+    abstract verifyGodBlock(godBlock:BlockBase):boolean;
     abstract getGodBlockHash():string;
     abstract async keepGodBlockData(godBlock:BlockBase):Promise<boolean>
     abstract async loadGodBlock():Promise<BlockBase>;

@@ -12,6 +12,8 @@ export default  abstract class StoreBase{
     abstract getGodKey(): string ;
     abstract getBlockDataKey(blockHash:string):string;
 
+    abstract getBlockByStr(dataStr:string):BlockBase;
+
     abstract async getBlockData(blockHash:string):Promise<BlockBase>;
 
     abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
@@ -19,8 +21,10 @@ export default  abstract class StoreBase{
     abstract async blockIterator(blockData:BlockBase): Promise<AsyncIterable<BlockBase>>;
 
     abstract async  getTransactionSignMapSize():Promise<number>;
-
+    
     abstract getTransactionSignDataKey(transactionSign:TransactionSignBase): string;
+
+    abstract getTransactionSignByStr(dataStr:string):TransactionSignBase;
 
     abstract delTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 

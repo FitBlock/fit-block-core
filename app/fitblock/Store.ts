@@ -30,9 +30,13 @@ export default class Store extends StoreBase {
         return lastBlock;
     }
 
+    getBlockByStr(dataStr:string):Block {
+        return Block.createByData(JSON.parse(dataStr));
+    }
+
     async getBlockData(blockHash:string):Promise<Block> {
         try {
-            return Block.createByData(JSON.parse(await this.get(this.getBlockDataKey(blockHash))));
+            return this.getBlockByStr(await this.get(this.getBlockDataKey(blockHash)));
         } catch(err) {
             return new Block('', config.godBlockHeight-1);
         }
@@ -68,6 +72,10 @@ export default class Store extends StoreBase {
 
     getTransactionSignDataKey(transactionSign:TransactionSign): string {
         return `transaction:${transactionSign.transaction.timestamp.toString()}:${transactionSign.signString}`;
+    }
+
+    getTransactionSignByStr(dataStr:string) {
+        return TransactionSign.createByData(JSON.parse(dataStr));
     }
 
     async getTransactionSignMapSize():Promise<number> {
