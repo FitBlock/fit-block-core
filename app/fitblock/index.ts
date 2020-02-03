@@ -116,13 +116,15 @@ export default class FitBlock extends AppBase {
         return await myStore.getBlockData(blockHash);
     }
     // 接收区块数据
-    async acceptBlock(blockHash: string, nextblock: Block): Promise<Block> {
-        if(blockHash==='' && this.verifyGodBlock(nextblock)) {
+    async acceptBlock(preBlock: Block, nextblock: Block): Promise<Block> {
+        if(
+            preBlock.nextBlockHash===this.getGodBlockHash() && 
+            this.verifyGodBlock(nextblock)
+        ) {
             return nextblock;
         }
-        const preBlock = await myStore.getBlockData(blockHash);
         if(preBlock.height === config.godBlockHeight-1) {
-            throw new Error(`blockhash: ${blockHash} not exist`)
+            throw new Error(`pre block has bad height`)
         }
         if(!preBlock.verifyNextBlock(nextblock)) {
             throw new Error(`nextBlock not pass verify`)

@@ -173,7 +173,7 @@ const testUnit = {
     },
     [Symbol('test.sendBlockByHash && test.acceptBlock')] : async function() {
         const block = await fitBlock.sendBlockByHash(godBlock.nextBlockHash);
-        const verifyBlock = await fitBlock.acceptBlock(fitBlock.getGodBlockHash(), block)
+        const verifyBlock = await fitBlock.acceptBlock(godBlock, block)
         ok(block.isSame(verifyBlock),'test.sendBlockByHash && test.acceptBlock error!');
     }
 }
