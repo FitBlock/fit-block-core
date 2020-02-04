@@ -18,8 +18,14 @@ export default class Store extends StoreBase {
     getGodKey(): string {
         return config.godBlockHash;
     }
-    getBlockDataKey(blockHash: string): string {
-        return `block:${blockHash}`;
+    getPreGodBlock():Block {
+        const preGodBlock = new Block('',config.godBlockHeight-1);
+        preGodBlock.timestamp = 0;
+        preGodBlock.nextBlockHash = this.getGodKey();
+        return preGodBlock;
+    }
+    getBlockDataKey(preBlock: Block): string {
+        return `block:${preBlock.nextBlockHash}:${preBlock.timestamp}`;
     }
 
     async getLastBlockData():Promise<Block> {
@@ -34,24 +40,24 @@ export default class Store extends StoreBase {
         return Block.createByData(JSON.parse(dataStr));
     }
 
-    async getBlockData(blockHash:string):Promise<Block> {
+    async getBlockData(preBlock: Block):Promise<Block> {
         try {
-            return this.getBlockByStr(await this.get(this.getBlockDataKey(blockHash)));
+            return this.getBlockByStr(await this.get(this.getBlockDataKey(preBlock)));
         } catch(err) {
             return new Block('', config.godBlockHeight-1);
         }
     }
 
-    async keepBlockData(blockHash:string, block:Block):Promise<boolean> {
+    async keepBlockData(preBlock: Block, block:Block):Promise<boolean> {
         for(const transactionSign of block.transactionSigns) {
             await this.delTransactionSignData(transactionSign);
         }
-        return await this.put(this.getBlockDataKey(blockHash), JSON.stringify(block));
+        return await this.put(this.getBlockDataKey(preBlock), JSON.stringify(block));
     }
 
     async blockIterator(nowBlock:Block=new Block('',config.godBlockHeight-1)): Promise<AsyncIterable<Block>> {
         if(nowBlock.height===config.godBlockHeight-1) {
-            nowBlock = await this.getBlockData(this.getGodKey());
+            nowBlock = await this.getBlockData(this.getPreGodBlock());
         }
         return {
             [Symbol.asyncIterator]:()=> {
@@ -60,7 +66,7 @@ export default class Store extends StoreBase {
                         if(!nowBlock.nextBlockHash) {
                             return {value: nowBlock, done: true}
                         }
-                        const nextBlock = await this.getBlockData(nowBlock.nextBlockHash)
+                        const nextBlock = await this.getBlockData(nowBlock)
                         const preBlock = nowBlock;
                         nowBlock = nextBlock;
                         return {value: preBlock, done: false}

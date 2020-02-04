@@ -7,10 +7,10 @@ export default abstract class AppBase{
     abstract getStore():StoreBase;
     abstract async genGodBlock():Promise<BlockBase>;
     abstract verifyGodBlock(godBlock:BlockBase):boolean;
-    abstract getGodBlockHash():string;
+    abstract getPreGodBlock():BlockBase;
     abstract async keepGodBlockData(godBlock:BlockBase):Promise<boolean>
     abstract async loadGodBlock():Promise<BlockBase>;
-    abstract async keepBlockData(blockHash:string ,block:BlockBase):Promise<boolean>;
+    abstract async keepBlockData(preBlock:BlockBase ,block:BlockBase):Promise<boolean>;
     abstract async loadLastBlockData():Promise<BlockBase>;
     abstract genPrivateKeyByString(data: string): string;
     abstract genPrivateKeyByRand(): string;
@@ -25,7 +25,7 @@ export default abstract class AppBase{
     // 优先同步区块，判断交易是否已存在，如果不存在则接收新的交易数据
     abstract async acceptTransaction(transactionSign:TransactionSignBase):Promise<TransactionSignBase>;
     // 通过区块hash值发送区块
-    abstract async sendBlockByHash(blockHash: string): Promise<BlockBase>;
+    abstract async sendBlockByPreBlock(preBlock: BlockBase): Promise<BlockBase>;
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     abstract async acceptBlock(preBlock: BlockBase, nextblock: BlockBase): Promise<BlockBase>;
 

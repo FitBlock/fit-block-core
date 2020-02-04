@@ -35,20 +35,20 @@ export default class FitBlock extends AppBase {
      return godBlock.verifyGodBlock(godBlock);
     }
 
-    getGodBlockHash():string {
-        return myStore.getGodKey();
+    getPreGodBlock():Block {
+        return myStore.getPreGodBlock();
     }
 
     async keepGodBlockData(godBlock:Block):Promise<boolean> {
-        return await myStore.keepBlockData(myStore.getGodKey(),godBlock)
+        return await myStore.keepBlockData(myStore.getPreGodBlock(),godBlock)
     }
 
     async loadGodBlock():Promise<Block> {
-        return await myStore.getBlockData(myStore.getGodKey());
+        return await myStore.getBlockData(myStore.getPreGodBlock());
     }
 
-    async keepBlockData(blockHash:string ,block:Block):Promise<boolean> {
-        return await myStore.keepBlockData(blockHash,block)
+    async keepBlockData(preBlock:Block ,block:Block):Promise<boolean> {
+        return await myStore.keepBlockData(preBlock, block)
     }
 
     async loadLastBlockData():Promise<Block> {
@@ -112,13 +112,13 @@ export default class FitBlock extends AppBase {
         return transactionSign;
     }
     // 通过区块hash值获取要发送的区块
-    async sendBlockByHash(blockHash: string): Promise<Block> {
-        return await myStore.getBlockData(blockHash);
+    async sendBlockByPreBlock(preBlock: Block): Promise<Block> {
+        return await myStore.getBlockData(preBlock);
     }
     // 接收区块数据
     async acceptBlock(preBlock: Block, nextblock: Block): Promise<Block> {
         if(
-            preBlock.nextBlockHash===this.getGodBlockHash() && 
+            this.getPreGodBlock().isSame(preBlock) && 
             this.verifyGodBlock(nextblock)
         ) {
             return nextblock;

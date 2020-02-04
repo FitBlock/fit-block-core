@@ -10,13 +10,13 @@ export default  abstract class StoreBase{
         this.checkAppName(this.appName);
     }
     abstract getGodKey(): string ;
-    abstract getBlockDataKey(blockHash:string):string;
+    abstract getBlockDataKey(preBlock: BlockBase):string;
 
     abstract getBlockByStr(dataStr:string):BlockBase;
 
-    abstract async getBlockData(blockHash:string):Promise<BlockBase>;
+    abstract async getBlockData(preBlock):Promise<BlockBase>;
 
-    abstract async keepBlockData(blockHash:string, Block:BlockBase):Promise<boolean>;
+    abstract async keepBlockData(preBlock, block:BlockBase):Promise<boolean>;
 
     abstract async blockIterator(blockData:BlockBase): Promise<AsyncIterable<BlockBase>>;
 

@@ -1,12 +1,13 @@
 import { ok, deepEqual } from 'assert';
 import level from 'fit-block-store';
 import fitBlock from '../index';
+import Block from '../app/fitblock/Block';
 const config = fitBlock.getConfig()
 const server = level.getServer();
 const testWalletAdress = fitBlock.getWalletAdressByPublicKey(fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456')));
 config.godWalletAdress = testWalletAdress;
 config.selfWalletAdress = testWalletAdress;
-let godBlock;
+let godBlock:Block;
 const runBefore = {
     [Symbol('before.server')] : async function() {
         await server.listen();
@@ -20,8 +21,9 @@ const testUnit = {
     [Symbol('test.keepGodBlockData')] : async function() {
         ok(await fitBlock.keepGodBlockData(godBlock),'keepGodBlockData error!')
     },
-    [Symbol('test.getGodBlockHash')] : async function() {
-        ok(fitBlock.getGodBlockHash() === fitBlock.getConfig().godBlockHash,'getGodBlockHash error!')
+    [Symbol('test.getPreGodBlock')] : async function() {
+        const preGodBlock = fitBlock.getPreGodBlock()
+        ok(preGodBlock.nextBlockHash === fitBlock.getConfig().godBlockHash,'getPreGodBlock error!')
     },
     [Symbol('test.loadGodBlock')] : async function() {
         const loadGodBlock = await fitBlock.loadGodBlock();
@@ -113,7 +115,7 @@ const testUnit = {
     [Symbol('test.mining && test.keepBlockData')] : async function() {
         const nextBlock = await fitBlock.mining(godBlock);
         ok(godBlock.verifyNextBlock(nextBlock),'mining error!')
-        ok(await fitBlock.keepBlockData(godBlock.nextBlockHash, nextBlock),'keepBlockData error!')
+        ok(await fitBlock.keepBlockData(godBlock, nextBlock),'keepBlockData error!')
     },
     [Symbol('test.getCoinNumberyByWalletAdress')] : async function() {
         const testAdressCoinNumber = await fitBlock.getCoinNumberyByWalletAdress(testWalletAdress);
@@ -171,10 +173,10 @@ const testUnit = {
             )
         }
     },
-    [Symbol('test.sendBlockByHash && test.acceptBlock')] : async function() {
-        const block = await fitBlock.sendBlockByHash(godBlock.nextBlockHash);
+    [Symbol('test.sendBlockByPreBlock && test.acceptBlock')] : async function() {
+        const block = await fitBlock.sendBlockByPreBlock(godBlock);
         const verifyBlock = await fitBlock.acceptBlock(godBlock, block)
-        ok(block.isSame(verifyBlock),'test.sendBlockByHash && test.acceptBlock error!');
+        ok(block.isSame(verifyBlock),'test.sendBlockByPreBlock && test.acceptBlock error!');
     }
 }
 
