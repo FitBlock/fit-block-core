@@ -4,7 +4,7 @@ import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
-    tmpValue: string;
+    tmpVersion: string;
     transactionSignMap = new Map<string, TransactionSignBase>();
     constructor(appName:string) {
         this.appName = appName;

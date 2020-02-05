@@ -19,9 +19,9 @@ export default class FitBlock extends AppBase {
         return config;
     }
 
-    getStore(tmpValue:string=''):Store {
-        // if tmpValue is exist then this instance is temp
-        const myStore = getStoreInstance(tmpValue);
+    getStore(tmpVersion:string=''):Store {
+        // if tmpVersion is exist then this instance is temp
+        const myStore = getStoreInstance(tmpVersion);
         return myStore;
     }
 

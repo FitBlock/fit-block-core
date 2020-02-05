@@ -5,10 +5,10 @@ import TransactionSign from './TransactionSign';
 
 export const getStoreInstance = ( ()=> {
     let instance = null;
-    return (tmpValue:string=''):Store=>{
-        if(tmpValue) {
+    return (tmpVersion:string=''):Store=>{
+        if(tmpVersion) {
             const tmpStore =  new Store(config.appName);
-            tmpStore.tmpValue = tmpValue;
+            tmpStore.tmpVersion = tmpVersion;
             return tmpStore;
         }
         if(instance) {
@@ -32,7 +32,7 @@ export default class Store extends StoreBase {
         return await this.put(config.blockVersionKey,version)
     }
     async getVersion() {
-        if(this.tmpValue){return this.tmpValue;}
+        if(this.tmpVersion){return this.tmpVersion;}
         return await this.get(config.blockVersionKey)
     }
     
