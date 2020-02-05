@@ -41,7 +41,9 @@ export default class FitBlock extends AppBase {
     }
 
     async keepGodBlockData(godBlock:Block):Promise<boolean> {
-        return await this.getStore().keepBlockData(this.getStore().getPreGodBlock(),godBlock)
+        const myStore = this.getStore();
+        await myStore.setVersion(myStore.genVersion())
+        return await myStore.keepBlockData(myStore.getPreGodBlock(),godBlock)
     }
 
     async loadGodBlock():Promise<Block> {
