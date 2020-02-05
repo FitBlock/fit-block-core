@@ -6,7 +6,6 @@ import config from './config';
 import InstanceFactory from './InstanceFactory';
 import {getStoreInstance} from './Store'
 import Store from './Store'
-const myStore = getStoreInstance();
 const myWallet = InstanceFactory.getWalletInstance();
 const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
 export default class FitBlock extends AppBase {
@@ -20,7 +19,9 @@ export default class FitBlock extends AppBase {
         return config;
     }
 
-    getStore():Store {
+    getStore(tmpValue:string=''):Store {
+        // if tmpValue is exist then this instance is temp
+        const myStore = getStoreInstance(tmpValue);
         return myStore;
     }
 
@@ -36,23 +37,23 @@ export default class FitBlock extends AppBase {
     }
 
     getPreGodBlock():Block {
-        return myStore.getPreGodBlock();
+        return this.getStore().getPreGodBlock();
     }
 
     async keepGodBlockData(godBlock:Block):Promise<boolean> {
-        return await myStore.keepBlockData(myStore.getPreGodBlock(),godBlock)
+        return await this.getStore().keepBlockData(this.getStore().getPreGodBlock(),godBlock)
     }
 
     async loadGodBlock():Promise<Block> {
-        return await myStore.getBlockData(myStore.getPreGodBlock());
+        return await this.getStore().getBlockData(this.getStore().getPreGodBlock());
     }
 
     async keepBlockData(preBlock:Block ,block:Block):Promise<boolean> {
-        return await myStore.keepBlockData(preBlock, block)
+        return await this.getStore().keepBlockData(preBlock, block)
     }
 
     async loadLastBlockData():Promise<Block> {
-        return await myStore.getLastBlockData();
+        return await this.getStore().getLastBlockData();
     }
 
     genPrivateKeyByString(textData: string): string {
@@ -77,7 +78,7 @@ export default class FitBlock extends AppBase {
     }
 
     async keepTransaction(transactionSign:TransactionSign):Promise<Boolean> {
-        return await myStore.keepTransactionSignData(transactionSign);
+        return await this.getStore().keepTransactionSignData(transactionSign);
     }
 
     async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
@@ -91,19 +92,19 @@ export default class FitBlock extends AppBase {
     //  优先同步区块，传播未成块的交易数据
     async sendTransaction():Promise<Array<TransactionSign>> {
         const transactionSignList = [];
-        for await (const transactionSign of await myStore.transactionSignIterator()) {
+        for await (const transactionSign of await this.getStore().transactionSignIterator()) {
             transactionSignList.push(transactionSign)
         }
         return transactionSignList;
     }
     async acceptTransaction(transactionSign:TransactionSign):Promise<TransactionSign> {
-        if(await myStore.getTransactionSignMapSize()>config.maxBlockTransactionSize) {
+        if(await this.getStore().getTransactionSignMapSize()>config.maxBlockTransactionSize) {
             throw new Error(`transactionSign is enough`)
         }
-        if(await myStore.checkIsTransactionSignInMap(transactionSign)) {
+        if(await this.getStore().checkIsTransactionSignInMap(transactionSign)) {
             throw new Error(`transactionSign is already exist`)
         }
-        if(await myStore.checkIsTransactionSignInBlock(transactionSign)) {
+        if(await this.getStore().checkIsTransactionSignInBlock(transactionSign)) {
             throw new Error(`transactionSign is already in block`)
         }
         if(!transactionSign.verify()) {
@@ -113,7 +114,7 @@ export default class FitBlock extends AppBase {
     }
     // 通过区块hash值获取要发送的区块
     async sendBlockByPreBlock(preBlock: Block): Promise<Block> {
-        return await myStore.getBlockData(preBlock);
+        return await this.getStore().getBlockData(preBlock);
     }
     // 接收区块数据
     async acceptBlock(preBlock: Block, nextblock: Block): Promise<Block> {

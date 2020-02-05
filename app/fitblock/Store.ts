@@ -5,7 +5,12 @@ import TransactionSign from './TransactionSign';
 
 export const getStoreInstance = ( ()=> {
     let instance = null;
-    return ():Store=>{
+    return (tmpValue:string=''):Store=>{
+        if(tmpValue) {
+            const tmpStore =  new Store(config.appName);
+            tmpStore.tmpValue = tmpValue;
+            return tmpStore;
+        }
         if(instance) {
             return instance;
         }
@@ -18,14 +23,28 @@ export default class Store extends StoreBase {
     getGodKey(): string {
         return config.godBlockHash;
     }
+    genVersion(): string {
+        const value1 = new Date().getTime().toString(16);
+        const value2 = (((1+Math.random())*0x1000000) & 0xffffff).toString(16);
+        return `${value1}-${value2}`;
+    }
+    async setVersion(version:string): Promise<boolean> {
+        return await this.put(config.blockVersionKey,version)
+    }
+    async getVersion() {
+        if(this.tmpValue){return this.tmpValue;}
+        return await this.get(config.blockVersionKey)
+    }
+    
     getPreGodBlock():Block {
         const preGodBlock = new Block('',config.godBlockHeight-1);
         preGodBlock.timestamp = 0;
         preGodBlock.nextBlockHash = this.getGodKey();
         return preGodBlock;
     }
-    getBlockDataKey(preBlock: Block): string {
-        return `block:${preBlock.nextBlockHash}:${preBlock.timestamp}`;
+    async getBlockDataKey(preBlock: Block): Promise<string> {
+        const version =  await this.getVersion();
+        return `#${version}#block:${preBlock.nextBlockHash}:${preBlock.timestamp}`;
     }
 
     async getLastBlockData():Promise<Block> {
@@ -42,7 +61,7 @@ export default class Store extends StoreBase {
 
     async getBlockData(preBlock: Block):Promise<Block> {
         try {
-            return this.getBlockByStr(await this.get(this.getBlockDataKey(preBlock)));
+            return this.getBlockByStr(await this.get(await this.getBlockDataKey(preBlock)));
         } catch(err) {
             return new Block('', config.godBlockHeight-1);
         }
@@ -52,7 +71,7 @@ export default class Store extends StoreBase {
         for(const transactionSign of block.transactionSigns) {
             await this.delTransactionSignData(transactionSign);
         }
-        return await this.put(this.getBlockDataKey(preBlock), JSON.stringify(block));
+        return await this.put(await this.getBlockDataKey(preBlock), JSON.stringify(block));
     }
 
     async blockIterator(nowBlock:Block=new Block('',config.godBlockHeight-1)): Promise<AsyncIterable<Block>> {

@@ -4,13 +4,17 @@ import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
+    tmpValue: string;
     transactionSignMap = new Map<string, TransactionSignBase>();
     constructor(appName:string) {
         this.appName = appName;
         this.checkAppName(this.appName);
     }
     abstract getGodKey(): string ;
-    abstract getBlockDataKey(preBlock: BlockBase):string;
+
+    abstract getPreGodBlock():BlockBase;
+
+    abstract async getBlockDataKey(preBlock: BlockBase): Promise<string> ;
 
     abstract getBlockByStr(dataStr:string):BlockBase;
 
