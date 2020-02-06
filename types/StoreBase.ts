@@ -11,7 +11,10 @@ export default  abstract class StoreBase{
         this.checkAppName(this.appName);
     }
     abstract getGodKey(): string ;
-
+    abstract genVersion(): string ;
+    abstract async setVersion(version:string): Promise<boolean> ;
+    abstract async getVersion(): Promise<string> ;
+        
     abstract getPreGodBlock():BlockBase;
 
     abstract async getBlockDataKey(preBlock: BlockBase): Promise<string> ;
@@ -25,7 +28,7 @@ export default  abstract class StoreBase{
     abstract async blockIterator(blockData:BlockBase): Promise<AsyncIterable<BlockBase>>;
 
     abstract async  getTransactionSignMapSize():Promise<number>;
-    
+    abstract async clearTimeOutTransactionSign():Promise<boolean>;
     abstract getTransactionSignDataKey(transactionSign:TransactionSignBase): string;
 
     abstract getTransactionSignByStr(dataStr:string):TransactionSignBase;

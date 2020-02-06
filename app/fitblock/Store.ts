@@ -31,9 +31,16 @@ export default class Store extends StoreBase {
     async setVersion(version:string): Promise<boolean> {
         return await this.put(config.blockVersionKey,version)
     }
-    async getVersion() {
+    async getVersion(): Promise<string> {
         if(this.tmpVersion){return this.tmpVersion;}
-        return await this.get(config.blockVersionKey)
+        try {
+            return await this.get(config.blockVersionKey)
+        } catch(err) {
+            console.warn(err)
+        }
+        const version = this.genVersion()
+        await this.setVersion(version)
+        return version
     }
     
     getPreGodBlock():Block {
@@ -71,6 +78,7 @@ export default class Store extends StoreBase {
         for(const transactionSign of block.transactionSigns) {
             await this.delTransactionSignData(transactionSign);
         }
+        await this.clearTimeOutTransactionSign()
         return await this.put(await this.getBlockDataKey(preBlock), JSON.stringify(block));
     }
 
@@ -105,6 +113,15 @@ export default class Store extends StoreBase {
 
     async getTransactionSignMapSize():Promise<number> {
         return this.transactionSignMap.size;
+    }
+
+    async clearTimeOutTransactionSign():Promise<boolean> {
+        for (const transactionSignItem of this.transactionSignMap) {
+            if(transactionSignItem[1].isTimeOut()) {
+                this.transactionSignMap.delete(transactionSignItem[0])
+            }
+        }
+        return true;
     }
 
     async checkIsTransactionSignInMap(transactionSign:TransactionSign):Promise<boolean> {
