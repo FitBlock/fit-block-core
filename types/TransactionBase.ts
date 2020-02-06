@@ -11,6 +11,7 @@ export default abstract class TransactionBase {
     }
     abstract getArriveFees():number;
     abstract getTradingFees():number;
+    abstract isTimeOut():boolean;
     abstract isSame(transaction:TransactionBase):boolean;
     serialize() {
         return JSON.stringify({

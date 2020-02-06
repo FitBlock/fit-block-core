@@ -18,6 +18,9 @@ export default class TransactionSign extends TransactionSignBase {
             s:BigInt(`0x${signList[1]}`)
         }
     }
+    isTimeOut():boolean {
+        return this.transaction.isTimeOut()
+    }
     isSame(transactionSign:TransactionSign):boolean {
         if(this.signString!==transactionSign.signString) {return false}
         if(!this.transaction.isSame(transactionSign.transaction)) {return false}

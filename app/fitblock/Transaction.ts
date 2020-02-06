@@ -10,6 +10,10 @@ export default class Transaction extends TransactionBase {
         return this.transCoinNumber-this.getTradingFees();
     }
 
+    isTimeOut():boolean {
+        return this.timestamp > (new Date().getTime()+config.transactionTimeOutTime)
+    }
+
     getTradingFees():number {
         return Math.ceil(this.transCoinNumber*config.transactionRate);
     }

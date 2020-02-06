@@ -90,8 +90,10 @@ export default class FitBlock extends AppBase {
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         return await myWallet.getCoinNumberyByWalletAdress(walletAdress);
     }
-
-    //  优先同步区块，传播未成块的交易数据
+    /**
+     * 优先同步区块，传播未成块的交易数据
+     * 同时如果交易超时，需要有重试机制重新发起交易，直到交易成功
+     */
     async sendTransaction():Promise<Array<TransactionSign>> {
         const transactionSignList = [];
         for await (const transactionSign of await this.getStore().transactionSignIterator()) {
@@ -102,6 +104,9 @@ export default class FitBlock extends AppBase {
     async acceptTransaction(transactionSign:TransactionSign):Promise<TransactionSign> {
         if(await this.getStore().getTransactionSignMapSize()>config.maxBlockTransactionSize) {
             throw new Error(`transactionSign is enough`)
+        }
+        if(transactionSign.isTimeOut()) {
+            throw new Error(`transactionSign is timeout`)
         }
         if(await this.getStore().checkIsTransactionSignInMap(transactionSign)) {
             throw new Error(`transactionSign is already exist`)
