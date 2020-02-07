@@ -14,11 +14,6 @@ export default abstract class TransactionBase {
     abstract isTimeOut():boolean;
     abstract isSame(transaction:TransactionBase):boolean;
     serialize() {
-        return JSON.stringify({
-            timestamp:this.timestamp,
-            senderAdress:this.senderAdress,
-            accepterAdress:this.accepterAdress,
-            transCoinNumber:this.transCoinNumber,
-        });
+        return JSON.stringify(this);
     }
 }

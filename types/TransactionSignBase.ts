@@ -11,4 +11,7 @@ export default abstract class TransactionSignBase {
     abstract isTimeOut():boolean;
     abstract isSame(transactionSign:TransactionSignBase):boolean;
     abstract verify():boolean;
+    serialize() {
+        return JSON.stringify(this);
+    }
 }
