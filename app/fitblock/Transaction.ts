@@ -11,7 +11,7 @@ export default class Transaction extends TransactionBase {
     }
 
     isTimeOut():boolean {
-        return this.timestamp > (new Date().getTime()+config.transactionTimeOutTime)
+        return this.timestamp < (new Date().getTime()-config.transactionTimeOutTime)
     }
 
     getTradingFees():number {
