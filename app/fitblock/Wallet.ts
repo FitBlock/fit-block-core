@@ -5,8 +5,13 @@ import ecdsa from 'ecdsa-secp256k1';
 import Transaction from './Transaction';
 import TransactionSign from './TransactionSign';
 import {getStoreInstance} from './Store'
-const myStore = getStoreInstance();
+import Store from './Store'
 export default class Wallet extends WalletBase {
+    myStore:Store;
+    constructor(dbClient:any) {
+        super();
+        this.myStore = getStoreInstance(dbClient);
+    }
     genPrivateKeyByString(textData: string): string {
         return createHash('sha256').update(textData).digest('hex');
     }
@@ -26,7 +31,7 @@ export default class Wallet extends WalletBase {
     }
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         let coinNum = 0;
-        for await (const block of await myStore.blockIterator()) {
+        for await (const block of await this.myStore.blockIterator()) {
             coinNum+=block.getCoinNumByWalletAdress(walletAdress);
             if(coinNum===Infinity) {
                 throw new Error("wallet coin number have range");

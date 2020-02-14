@@ -3,8 +3,13 @@ import Block from './Block';
 import config from './config'
 import {sleep} from './util/index'
 import {getStoreInstance} from './Store'
-const myStore = getStoreInstance();
+import Store from './Store'
 export default class CoinWorker extends CoinWorkerBase {
+    myStore:Store;
+    constructor(dbClient:any) {
+        super();
+        this.myStore = getStoreInstance(dbClient);
+    }
     async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
         const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
         if(range[0]<0n){
@@ -31,7 +36,7 @@ export default class CoinWorker extends CoinWorkerBase {
         return preBlock.outBlock(newBlock);
     }
     async addTransactionInBlock(nextBlockHash:string ,newBlock: Block): Promise<Block> {
-        for await (const transactionSign of await myStore.transactionSignIterator()) {
+        for await (const transactionSign of await this.myStore.transactionSignIterator()) {
             transactionSign.inBlockHash = nextBlockHash;
             newBlock.transactionSigns.push(transactionSign)
         }

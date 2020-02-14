@@ -1,14 +1,14 @@
-import blockStore from 'fit-block-store';
-const dbClient = blockStore.getClient();
 import BlockBase from './BlockBase'
 import TransactionSignBase from './TransactionSignBase'
 export default  abstract class StoreBase{
     private appName: string;
     tmpVersion: string;
+    dbClient:any;
     transactionSignMap = new Map<string, TransactionSignBase>();
-    constructor(appName:string) {
+    constructor(appName:string,dbClient:any) {
         this.appName = appName;
         this.checkAppName(this.appName);
+        this.dbClient = dbClient;
     }
     abstract getGodKey(): string ;
     abstract genVersion(): string ;
@@ -51,22 +51,22 @@ export default  abstract class StoreBase{
     }
 
     private async conect():Promise<boolean> {
-        if(await dbClient.isConect()){return true;}
-        return await dbClient.conect(this.appName);
+        if(await this.dbClient.isConect()){return true;}
+        return await this.dbClient.conect(this.appName);
     }
 
     async put(key: string, value:string):Promise<boolean> {
         await this.conect();
-        return await dbClient.put(key, value);
+        return await this.dbClient.put(key, value);
     }
 
     async get(key: string):Promise<string>  {
         await this.conect();
-        return await dbClient.get(key);
+        return await this.dbClient.get(key);
     }
 
     async del(key: string):Promise<boolean>  {
         await this.conect();
-        return await dbClient.del(key);
+        return await this.dbClient.del(key);
     }
 }

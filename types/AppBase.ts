@@ -3,6 +3,7 @@ import StoreBase from './StoreBase'
 import TransactionSignBase from './TransactionSignBase'
 export default abstract class AppBase{
     abstract name: string;
+    abstract dbClient: any;
     abstract getConfig():any;
     abstract getStore():StoreBase;
     abstract async genGodBlock():Promise<BlockBase>;

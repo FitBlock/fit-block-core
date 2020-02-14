@@ -6,13 +6,19 @@ import config from './config';
 import InstanceFactory from './InstanceFactory';
 import {getStoreInstance} from './Store'
 import Store from './Store'
-const myWallet = InstanceFactory.getWalletInstance();
-const myCoinWorker = InstanceFactory.getCoinWorkerInstance();
+import Wallet from './Wallet'
+import CoinWorker from './CoinWorker'
 export default class FitBlock extends AppBase {
     name: string;
-    constructor() {
+    dbClient: any;
+    myWallet:Wallet;
+    myCoinWorker:CoinWorker;
+    constructor(dbClient:any) {
         super();
         this.name = config.appName;
+        this.dbClient = dbClient
+        this.myWallet = InstanceFactory.getWalletInstance(dbClient);
+        this.myCoinWorker = InstanceFactory.getCoinWorkerInstance(dbClient);
     }
     
     getConfig() {
@@ -21,7 +27,7 @@ export default class FitBlock extends AppBase {
 
     getStore(tmpVersion:string=''):Store {
         // if tmpVersion is exist then this instance is temp
-        const myStore = getStoreInstance(tmpVersion);
+        const myStore = getStoreInstance(this.dbClient, tmpVersion);
         return myStore;
     }
 
@@ -59,23 +65,23 @@ export default class FitBlock extends AppBase {
     }
 
     genPrivateKeyByString(textData: string): string {
-        return myWallet.genPrivateKeyByString(textData);
+        return this.myWallet.genPrivateKeyByString(textData);
     }
     genPrivateKeyByRand(): string {
-        return myWallet.genPrivateKeyByRand();
+        return this.myWallet.genPrivateKeyByRand();
     }
     getPublicKeyByPrivateKey(privateKey: string): string {
-        return myWallet.getPublicKeyByPrivateKey(privateKey);
+        return this.myWallet.getPublicKeyByPrivateKey(privateKey);
     }
     getWalletAdressByPublicKey(publicKey: string): string {
-        return myWallet.getWalletAdressByPublicKey(publicKey);
+        return this.myWallet.getWalletAdressByPublicKey(publicKey);
     }
     getPublicKeyByWalletAdress(walletAdress: string): string {
-        return myWallet.getPublicKeyByWalletAdress(walletAdress);
+        return this.myWallet.getPublicKeyByWalletAdress(walletAdress);
     }
 
     async genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):Promise<TransactionSign> {
-        const transactionSign= myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
+        const transactionSign= this.myWallet.genTransaction(privateKey,accepterAdress,transCoinNumber);
         return transactionSign;
     }
 
@@ -84,11 +90,11 @@ export default class FitBlock extends AppBase {
     }
 
     async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
-        return await myCoinWorker.mining(preBlock, range);
+        return await this.myCoinWorker.mining(preBlock, range);
     }
 
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
-        return await myWallet.getCoinNumberyByWalletAdress(walletAdress);
+        return await this.myWallet.getCoinNumberyByWalletAdress(walletAdress);
     }
     /**
      * 优先同步区块，传播未成块的交易数据

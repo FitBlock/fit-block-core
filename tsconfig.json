@@ -9,6 +9,7 @@
         "types/**/*",
         "test/**/*",
         "appFactory.ts",
-        "index.ts"
+        "index.ts",
+        "indexWeb.ts"
     ]
 }

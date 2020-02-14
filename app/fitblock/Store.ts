@@ -2,19 +2,18 @@ import StoreBase from '../../types/StoreBase';
 import Block from './Block';
 import config from './config';
 import TransactionSign from './TransactionSign';
-
 export const getStoreInstance = ( ()=> {
     let instance = null;
-    return (tmpVersion:string=''):Store=>{
+    return (dbClient:any,tmpVersion:string=''):Store=>{
         if(tmpVersion) {
-            const tmpStore =  new Store(config.appName);
+            const tmpStore =  new Store(config.appName,dbClient);
             tmpStore.tmpVersion = tmpVersion;
             return tmpStore;
         }
         if(instance) {
             return instance;
         }
-        instance = new Store(config.appName)
+        instance = new Store(config.appName,dbClient)
         return instance
     }
 })();
