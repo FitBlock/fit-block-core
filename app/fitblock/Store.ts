@@ -43,10 +43,7 @@ export default class Store extends StoreBase {
     }
     
     getPreGodBlock():Block {
-        const preGodBlock = new Block('',config.godBlockHeight-1);
-        preGodBlock.timestamp = 0;
-        preGodBlock.nextBlockHash = this.getGodKey();
-        return preGodBlock;
+        return Block.getPreGodBlock();
     }
     async getBlockDataKey(preBlock: Block): Promise<string> {
         const version =  await this.getVersion();
@@ -54,7 +51,7 @@ export default class Store extends StoreBase {
     }
 
     async getLastBlockData():Promise<Block> {
-        let lastBlock = new Block('', config.godBlockHeight-1);  
+        let lastBlock = Block.getInvalidBlock();  
         for await (const block of await this.blockIterator()) {
             lastBlock = block;
         }
@@ -69,7 +66,7 @@ export default class Store extends StoreBase {
         try {
             return this.getBlockByStr(await this.get(await this.getBlockDataKey(preBlock)));
         } catch(err) {
-            return new Block('', config.godBlockHeight-1);
+            return Block.getInvalidBlock()
         }
     }
 
@@ -81,7 +78,7 @@ export default class Store extends StoreBase {
         return await this.put(await this.getBlockDataKey(preBlock), JSON.stringify(block));
     }
 
-    async blockIterator(nowBlock:Block=new Block('',config.godBlockHeight-1)): Promise<AsyncIterable<Block>> {
+    async blockIterator(nowBlock:Block=Block.getInvalidBlock()): Promise<AsyncIterable<Block>> {
         if(nowBlock.height===config.godBlockHeight-1) {
             nowBlock = await this.getBlockData(this.getPreGodBlock());
         }

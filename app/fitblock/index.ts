@@ -93,6 +93,16 @@ export default class FitBlock extends AppBase {
         return await this.myCoinWorker.mining(preBlock, range);
     }
 
+    async getTransactionsByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock(),
+        limit:number=10
+    ): Promise<Array<TransactionSign>> {
+        return await this.myWallet.getTransactionsByWalletAdress(
+            walletAdress,startBlock,limit
+        );
+    }
+
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         return await this.myWallet.getCoinNumberyByWalletAdress(walletAdress);
     }

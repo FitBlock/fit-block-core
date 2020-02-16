@@ -144,7 +144,31 @@ export default class Block extends BlockBase {
         return true;
     }
 
-    getCoinNumByWalletAdress(walletAdress: string): number {
+    static getPreGodBlock():Block {
+        const preGodBlock = new Block('',config.godBlockHeight-1);
+        preGodBlock.timestamp = 0;
+        preGodBlock.nextBlockHash = config.godBlockHash;
+        return preGodBlock;
+    }
+
+    static getInvalidBlock():Block {
+        const invalidBlock = new Block('',config.godBlockHeight-1);
+        return invalidBlock;
+    }
+
+    getTransactionsByWalletAdress(walletAdress: string): Array<TransactionSign> {
+        const transactions = []
+        for(const transactionSign of this.transactionSigns) {
+            if(walletAdress===transactionSign.transaction.senderAdress) {
+                transactions.push(transactionSign)
+            }
+            if(walletAdress===transactionSign.transaction.accepterAdress) {
+                transactions.push(transactionSign)
+            }
+        }
+        return transactions
+    }
+    getCoinNumberyByWalletAdress(walletAdress: string): number {
         let coinNum = 0;
         if(walletAdress===this.workerAddress) {
             coinNum+=Math.floor(config.initOutBlockCoinNum/Math.ceil(this.height/config.HalfHeightCycle));

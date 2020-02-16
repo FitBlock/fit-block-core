@@ -6,6 +6,7 @@ import Transaction from './Transaction';
 import TransactionSign from './TransactionSign';
 import {getStoreInstance} from './Store'
 import Store from './Store'
+import Block from './Block';
 export default class Wallet extends WalletBase {
     myStore:Store;
     constructor(dbClient:any) {
@@ -32,7 +33,7 @@ export default class Wallet extends WalletBase {
     async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
         let coinNum = 0;
         for await (const block of await this.myStore.blockIterator()) {
-            coinNum+=block.getCoinNumByWalletAdress(walletAdress);
+            coinNum+=block.getCoinNumberyByWalletAdress(walletAdress);
             if(coinNum===Infinity) {
                 throw new Error("wallet coin number have range");
             }
@@ -41,6 +42,21 @@ export default class Wallet extends WalletBase {
             }
         }
         return coinNum;
+    }
+
+    async getTransactionsByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock(),
+        limit:number=10
+    ): Promise<Array<TransactionSign>> {
+        const transactions = [];
+        for await (const block of await this.myStore.blockIterator(startBlock)) {
+            transactions.push(...block.getTransactionsByWalletAdress(walletAdress));
+            if(transactions.length>=limit){
+                break;
+            }
+        }
+        return transactions;
     }
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));
