@@ -97,14 +97,17 @@ export default class FitBlock extends AppBase {
         walletAdress: string,
         startBlock:Block=Block.getInvalidBlock(),
         limit:number=10
-    ): Promise<Array<TransactionSign>> {
+    ): Promise<{lastBlock:Block,transactions:Array<TransactionSign>}> {
         return await this.myWallet.getTransactionsByWalletAdress(
             walletAdress,startBlock,limit
         );
     }
 
-    async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
-        return await this.myWallet.getCoinNumberyByWalletAdress(walletAdress);
+    async getCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock()
+    ): Promise<{lastBlock:Block,coinNumber:number}> {
+        return await this.myWallet.getCoinNumberyByWalletAdress(walletAdress, startBlock);
     }
     /**
      * 优先同步区块，传播未成块的交易数据

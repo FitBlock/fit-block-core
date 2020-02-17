@@ -24,8 +24,14 @@ export default abstract class AppBase{
         walletAdress: string,
         startBlock:BlockBase,
         limit:number
-    ): Promise<Array<TransactionSignBase>>
-    abstract async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number>
+    ): Promise<{
+        lastBlock:BlockBase,
+        transactions:Array<TransactionSignBase>
+    }>
+    abstract async getCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:BlockBase
+    ): Promise<{lastBlock:BlockBase,coinNumber:number}>
     //  优先同步区块，传播未成块的交易数据
     abstract async sendTransaction():Promise<Array<TransactionSignBase>>
     // 优先同步区块，判断交易是否已存在，如果不存在则接收新的交易数据

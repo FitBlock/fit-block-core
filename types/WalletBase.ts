@@ -6,10 +6,13 @@ export default abstract class WalletBase {
     abstract getPublicKeyByPrivateKey(privateKey: string): string;
     abstract getWalletAdressByPublicKey(publicKey: string): string;
     abstract getPublicKeyByWalletAdress(walletAdress: string): string;
-    abstract getCoinNumberyByWalletAdress(walletAdress: string): Promise<number>;
+    abstract getCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:BlockBase
+    ): Promise<{lastBlock:BlockBase,coinNumber:number}>;
     abstract async getTransactionsByWalletAdress(
         walletAdress: string,
         startBlock:BlockBase,
         limit:number
-    ): Promise<Array<TransactionSignBase>>
+    ): Promise<{lastBlock:BlockBase,transactions:Array<TransactionSignBase>}>
 }

@@ -125,8 +125,8 @@ const testUnit = {
         const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
         const accepterAdressCoinNumber  = await fitBlock.getCoinNumberyByWalletAdress(accepterAdress);
         const transactionCoinNumber = Math.ceil(config.initOutBlockCoinNum*config.transactionRate);
-        ok(testAdressCoinNumber=== config.initOutBlockCoinNum + transactionCoinNumber
-            && accepterAdressCoinNumber=== config.initOutBlockCoinNum - transactionCoinNumber,'getCoinNumberyByWalletAdress error!')
+        ok(testAdressCoinNumber.coinNumber=== config.initOutBlockCoinNum + transactionCoinNumber
+            && accepterAdressCoinNumber.coinNumber=== config.initOutBlockCoinNum - transactionCoinNumber,'getCoinNumberyByWalletAdress error!')
     },
     [Symbol('test.sendTransaction')] : async function() {
         const emptyTransactionList = await fitBlock.sendTransaction();

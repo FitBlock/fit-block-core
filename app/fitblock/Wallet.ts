@@ -30,33 +30,46 @@ export default class Wallet extends WalletBase {
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
-    async getCoinNumberyByWalletAdress(walletAdress: string): Promise<number> {
-        let coinNum = 0;
-        for await (const block of await this.myStore.blockIterator()) {
-            coinNum+=block.getCoinNumberyByWalletAdress(walletAdress);
-            if(coinNum===Infinity) {
+    async getCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock(),
+    ): Promise<{lastBlock:Block,coinNumber:number}> {
+        let coinNumber = 0;
+        let lastBlock = startBlock;
+        for await (const block of await this.myStore.blockIterator(startBlock)) {
+            lastBlock = block;
+            coinNumber+=block.getCoinNumberyByWalletAdress(walletAdress);
+            if(coinNumber===Infinity) {
                 throw new Error("wallet coin number have range");
             }
-            if(coinNum<0) {
-                throw new Error("wallet coin number not be minus");
-            }
+            // if(coinNumber<0) {
+            //     throw new Error("wallet coin number not be minus");
+            // }
         }
-        return coinNum;
+        return {
+            lastBlock,
+            coinNumber
+        };
     }
 
     async getTransactionsByWalletAdress(
         walletAdress: string,
         startBlock:Block=Block.getInvalidBlock(),
         limit:number=10
-    ): Promise<Array<TransactionSign>> {
+    ): Promise<{lastBlock:Block,transactions:Array<TransactionSign>}> {
         const transactions = [];
+        let lastBlock = startBlock;
         for await (const block of await this.myStore.blockIterator(startBlock)) {
+            lastBlock = block;
             transactions.push(...block.getTransactionsByWalletAdress(walletAdress));
             if(transactions.length>=limit){
                 break;
             }
         }
-        return transactions;
+        return {
+            lastBlock,
+            transactions
+        };
     }
     genTransaction(privateKey: string,accepterAdress: string,transCoinNumber:number):TransactionSign {
         const senderAdress = this.getWalletAdressByPublicKey(this.getPublicKeyByPrivateKey(privateKey));
