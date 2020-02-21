@@ -168,7 +168,7 @@ export default class Block extends BlockBase {
         }
         return transactions
     }
-    getCoinNumberyByWalletAdress(walletAdress: string): number {
+    getMiningCoinNumberyByWalletAdress(walletAdress: string): number {
         let coinNum = 0;
         if(walletAdress===this.workerAddress) {
             coinNum+=Math.floor(config.initOutBlockCoinNum/Math.ceil(this.height/config.HalfHeightCycle));
@@ -176,6 +176,11 @@ export default class Block extends BlockBase {
                 coinNum+=transactionSign.transaction.getTradingFees();
             }
         }
+        return coinNum;
+    }
+    getCoinNumberyByWalletAdress(walletAdress: string): number {
+        let coinNum = 0;
+        coinNum+=this.getMiningCoinNumberyByWalletAdress(walletAdress);
         for(const transactionSign of this.transactionSigns) {
             if(walletAdress===transactionSign.transaction.senderAdress) {
                 coinNum-=transactionSign.transaction.transCoinNumber;

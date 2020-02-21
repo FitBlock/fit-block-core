@@ -10,6 +10,10 @@ export default abstract class WalletBase {
         walletAdress: string,
         startBlock:BlockBase
     ): Promise<{lastBlock:BlockBase,coinNumber:number}>;
+    abstract async getMiningCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:BlockBase
+    ): Promise<{lastBlock:BlockBase,coinNumber:number}>
     abstract async getTransactionsByWalletAdress(
         walletAdress: string,
         startBlock:BlockBase,

@@ -30,6 +30,29 @@ export default class Wallet extends WalletBase {
     getPublicKeyByWalletAdress(walletAdress: string): string {
         return base582Hex(walletAdress);
     }
+
+    async getMiningCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock(),
+    ): Promise<{lastBlock:Block,coinNumber:number}> {
+        let coinNumber = 0;
+        let lastBlock = startBlock;
+        for await (const block of await this.myStore.blockIterator(startBlock)) {
+            lastBlock = block;
+            coinNumber+=block.getMiningCoinNumberyByWalletAdress(walletAdress);
+            if(coinNumber===Infinity) {
+                throw new Error("mining coin number have range");
+            }
+            if(coinNumber<0) {
+                throw new Error("mining coin number not be minus");
+            }
+        }
+        return {
+            lastBlock,
+            coinNumber
+        };
+    }
+
     async getCoinNumberyByWalletAdress(
         walletAdress: string,
         startBlock:Block=Block.getInvalidBlock(),

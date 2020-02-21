@@ -60,8 +60,8 @@ export default class FitBlock extends AppBase {
         return await this.getStore().keepBlockData(preBlock, block)
     }
 
-    async loadLastBlockData():Promise<Block> {
-        return await this.getStore().getLastBlockData();
+    async loadLastBlockData(preBlock:Block = Block.getInvalidBlock()):Promise<Block> {
+        return await this.getStore().getLastBlockData(preBlock);
     }
 
     genPrivateKeyByString(textData: string): string {
@@ -101,6 +101,13 @@ export default class FitBlock extends AppBase {
         return await this.myWallet.getTransactionsByWalletAdress(
             walletAdress,startBlock,limit
         );
+    }
+
+    async getMiningCoinNumberyByWalletAdress(
+        walletAdress: string,
+        startBlock:Block=Block.getInvalidBlock()
+    ): Promise<{lastBlock:Block,coinNumber:number}> {
+        return await this.myWallet.getMiningCoinNumberyByWalletAdress(walletAdress, startBlock);
     }
 
     async getCoinNumberyByWalletAdress(

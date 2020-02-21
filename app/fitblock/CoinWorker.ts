@@ -11,6 +11,7 @@ export default class CoinWorker extends CoinWorkerBase {
         this.myStore = getStoreInstance(dbClient);
     }
     async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
+        // range default (0,-1n]
         const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
         if(range[0]<0n){
             throw new Error('range must gte 0');
@@ -37,8 +38,10 @@ export default class CoinWorker extends CoinWorkerBase {
     }
     async addTransactionInBlock(nextBlockHash:string ,newBlock: Block): Promise<Block> {
         for await (const transactionSign of await this.myStore.transactionSignIterator()) {
-            transactionSign.inBlockHash = nextBlockHash;
-            newBlock.transactionSigns.push(transactionSign)
+            if(!transactionSign.isTimeOut()) {
+                transactionSign.inBlockHash = nextBlockHash;
+                newBlock.transactionSigns.push(transactionSign)
+            }
         }
         return newBlock;
     }
