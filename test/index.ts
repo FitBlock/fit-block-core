@@ -112,7 +112,12 @@ const testUnit = {
         ok(await fitBlock.keepTransaction(transactionSign),'test.keepTransaction error!')
     },
     [Symbol('test.mining && test.keepBlockData')] : async function() {
-        const nextBlock = await fitBlock.mining(godBlock, testWalletAdress);
+        const transactionSignList = []
+        const myStore = fitBlock.getStore()
+        for await(const transactionSign of await myStore.transactionSignIterator()) {
+            transactionSignList.push(transactionSign)
+        }
+        const nextBlock = await fitBlock.mining(godBlock, testWalletAdress, transactionSignList);
         ok(godBlock.verifyNextBlock(nextBlock),'mining error!')
         ok(await fitBlock.keepBlockData(godBlock, nextBlock),'keepBlockData error!')
     },

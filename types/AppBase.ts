@@ -45,5 +45,12 @@ export default abstract class AppBase{
     // 接收区块数据,并标记在块中已交易的交易数据为交易成功
     abstract async acceptBlock(preBlock: BlockBase, nextblock: BlockBase): Promise<BlockBase>;
 
-    abstract async mining(preBlock:BlockBase, miningAddress:string, range: Array<bigint>): Promise<BlockBase>;
+    abstract async mining(
+        preBlock:BlockBase, miningAddress:string, 
+        transactionSignList:Array<TransactionSignBase>,
+        miningAop:(relateBlock:{
+            preBlock: BlockBase,
+            nextBlock: BlockBase,
+        })=>Promise<boolean>,
+        startBigInt:bigint): Promise<BlockBase>;
 } 

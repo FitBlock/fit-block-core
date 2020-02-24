@@ -1,5 +1,17 @@
 import BlockBase from './BlockBase'
+import TransactionSignBase from './TransactionSignBase';
 export default abstract class MiningWorkerBase {
-    abstract mining(preBlock:BlockBase, miningAddress:string, range: Array<bigint>):Promise<BlockBase>;
-    abstract addTransactionInBlock(nextBlockHash:string ,newBlock: BlockBase): Promise<BlockBase>;
+    abstract mining(
+        preBlock:BlockBase, 
+        miningAddress:string, 
+        transactionSignList:Array<TransactionSignBase>,
+        miningAop:(relateBlock:{
+            preBlock: BlockBase,
+            nextBlock: BlockBase,
+        })=>Promise<boolean>,
+        startBigInt:bigint):Promise<BlockBase>;
+    abstract addTransactionInBlock(
+        transactionSignList:Array<TransactionSignBase>,
+        nextBlockHash:string ,
+        newBlock: BlockBase): Promise<BlockBase>;
 }
