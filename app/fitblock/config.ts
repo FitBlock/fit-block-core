@@ -10,7 +10,6 @@ export default {
     godBlockHash:'godBlock',
     godBlockHeight:1,
     blockVersionKey:'blockVersion',
-    selfWalletAdress:'',
     transactionRate:0.001,
     transactionTimeOutTime:3*600*1000, //unit：ms
     HalfHeightCycle:77760, // every (18*30*24*60/10) height to helf

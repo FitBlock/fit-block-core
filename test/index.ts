@@ -6,7 +6,6 @@ const config = fitBlock.getConfig()
 const server = level.getServer();
 const testWalletAdress = fitBlock.getWalletAdressByPublicKey(fitBlock.getPublicKeyByPrivateKey(fitBlock.genPrivateKeyByString('123456')));
 config.godWalletAdress = testWalletAdress;
-config.selfWalletAdress = testWalletAdress;
 let godBlock:Block;
 const runBefore = {
     [Symbol('before.server')] : async function() {
@@ -113,7 +112,7 @@ const testUnit = {
         ok(await fitBlock.keepTransaction(transactionSign),'test.keepTransaction error!')
     },
     [Symbol('test.mining && test.keepBlockData')] : async function() {
-        const nextBlock = await fitBlock.mining(godBlock);
+        const nextBlock = await fitBlock.mining(godBlock, testWalletAdress);
         ok(godBlock.verifyNextBlock(nextBlock),'mining error!')
         ok(await fitBlock.keepBlockData(godBlock, nextBlock),'keepBlockData error!')
     },

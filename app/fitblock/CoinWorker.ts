@@ -10,9 +10,9 @@ export default class CoinWorker extends CoinWorkerBase {
         super();
         this.myStore = getStoreInstance(dbClient);
     }
-    async mining(preBlock:Block, range: Array<bigint> = [0n,-1n]): Promise<Block> {
+    async mining(preBlock:Block, miningAddress:string='', range: Array<bigint> = [0n,-1n]): Promise<Block> {
         // range default (0,-1n]
-        const newBlock = new Block(config.selfWalletAdress, preBlock.height+1);
+        const newBlock = new Block(miningAddress, preBlock.height+1);
         if(range[0]<0n){
             throw new Error('range must gte 0');
         }
