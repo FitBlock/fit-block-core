@@ -5,7 +5,7 @@ export default abstract class MiningWorkerBase {
         preBlock:BlockBase, 
         miningAddress:string, 
         transactionSignList:Array<TransactionSignBase>,
-        miningAop:(nextBlock: BlockBase)=>Promise<boolean>,
+        miningAop:(nextBlock: BlockBase, isComplete:boolean)=>Promise<boolean>,
         startBigInt:bigint):Promise<BlockBase>;
     abstract addTransactionInBlock(
         transactionSignList:Array<TransactionSignBase>,

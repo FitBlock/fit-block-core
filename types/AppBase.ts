@@ -48,6 +48,6 @@ export default abstract class AppBase{
     abstract async mining(
         preBlock:BlockBase, miningAddress:string, 
         transactionSignList:Array<TransactionSignBase>,
-        miningAop:(nextBlock: BlockBase)=>Promise<boolean>,
+        miningAop:(nextBlock: BlockBase, isComplete:boolean)=>Promise<boolean>,
         startBigInt:bigint): Promise<BlockBase>;
 } 

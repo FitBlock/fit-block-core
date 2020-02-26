@@ -92,7 +92,12 @@ export default class FitBlock extends AppBase {
     async mining(
         preBlock:Block, miningAddress:string, 
         transactionSignList:Array<TransactionSign>,
-        miningAop:(nextBlock: Block)=>Promise<boolean> = async ()=>{return true},
+        miningAop:(nextBlock: Block, isComplete:boolean)=>Promise<boolean> = async (
+            nextBlock: Block, isComplete:boolean
+        )=>{
+            if(isComplete) {return false}
+            return true
+        },
         startBigInt:bigint=0n
     ): Promise<Block> {
         return await this.myCoinWorker.mining(

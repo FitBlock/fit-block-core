@@ -13,7 +13,12 @@ export default class CoinWorker extends CoinWorkerBase {
     async mining(
         preBlock:Block, miningAddress:string='', 
         transactionSignList:Array<TransactionSign>,
-        miningAop:(nextBlock: Block)=>Promise<boolean> = async ()=>{return true},
+        miningAop:(nextBlock: Block, isComplete:boolean)=>Promise<boolean> = async (
+            nextBlock: Block, isComplete:boolean
+        )=>{
+            if(isComplete) {return false}
+            return true
+        },
         startBigInt:bigint=0n
         ): Promise<Block> {
         const newBlock = new Block(miningAddress, preBlock.height+1);
@@ -25,8 +30,8 @@ export default class CoinWorker extends CoinWorkerBase {
             await sleep(10) // 这里是为了尽可能不影响其他异步任务，为异步任务分片
             startBigInt++;
             newBlock.blockVal = startBigInt.toString(config.blockValRadix);
-            if(!(await miningAop(newBlock))){break;}
-        } while(!(preBlock.verifyNextBlockVal(newBlock)));
+            if(!(await miningAop(newBlock, preBlock.verifyNextBlockVal(newBlock)))){break;}
+        } while(true);
         return preBlock.outBlock(newBlock);
     }
     async addTransactionInBlock(
