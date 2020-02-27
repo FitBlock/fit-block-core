@@ -156,6 +156,15 @@ export default class FitBlock extends AppBase {
         if(!transactionSign.verify()) {
             throw new Error(`nextBlock not pass verify`)
         }
+        let costCoinNumber = await this.getStore().getTransactionSignCostInMap(transactionSign);
+        let {coinNumber} = await this.myWallet.getCoinNumberyByWalletAdress(
+            transactionSign.transaction.senderAdress
+        )
+        if(coinNumber-costCoinNumber<transactionSign.transaction.transCoinNumber) {
+            throw new Error(
+                `transactionSign transCoinNumber out of ${transactionSign.transaction.senderAdress} CoinNumber`
+            )
+        }
         return transactionSign;
     }
     // 通过区块hash值获取要发送的区块

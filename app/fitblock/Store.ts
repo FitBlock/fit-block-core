@@ -131,6 +131,19 @@ export default class Store extends StoreBase {
         return isInMap
     }
 
+    async getTransactionSignCostInMap(transactionSign:TransactionSign):Promise<number> {
+        let costCoinNumber = 0;
+        for (const transactionSignItem of this.transactionSignMap) {
+            if(
+                transactionSignItem[1].transaction.senderAdress === 
+                transactionSign.transaction.senderAdress
+            ) {
+                costCoinNumber+= transactionSignItem[1].transaction.transCoinNumber;
+            }
+        }
+        return costCoinNumber
+    }
+
     async checkIsTransactionSignInBlock(transactionSign:TransactionSign):Promise<boolean> {
         let isInBlock = false;
         for await (const block of await this.blockIterator()) {

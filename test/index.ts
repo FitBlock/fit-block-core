@@ -141,7 +141,7 @@ const testUnit = {
         )
         const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
         const transactionSign = await fitBlock.genTransaction(
-            privateKey, accepterAdress, config.initOutBlockCoinNum
+            privateKey, accepterAdress, config.initOutBlockCoinNum/3
         );
         await fitBlock.keepTransaction(transactionSign);
         const transactionList = await fitBlock.sendTransaction();
@@ -154,7 +154,7 @@ const testUnit = {
         )
         const accepterAdress = fitBlock.getWalletAdressByPublicKey(accepterPublicKey);
         const newTransactionSign = await fitBlock.genTransaction(
-            privateKey, accepterAdress, config.initOutBlockCoinNum
+            privateKey, accepterAdress, config.initOutBlockCoinNum/3
         );
         const passTransactionSign = await fitBlock.acceptTransaction(newTransactionSign);
         ok(passTransactionSign.isSame(newTransactionSign),'acceptTransaction error!');
