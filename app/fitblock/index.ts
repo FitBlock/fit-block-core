@@ -116,6 +116,10 @@ export default class FitBlock extends AppBase {
         );
     }
 
+    getOutBlockCoinNumber(nowBlock:Block): number {
+        return nowBlock.getOutBlockCoinNumber()
+    }
+
     async getMiningCoinNumberyByWalletAdress(
         walletAdress: string,
         startBlock:Block=Block.getInvalidBlock()

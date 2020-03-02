@@ -35,6 +35,7 @@ export default abstract class BlockBase {
 
     abstract outBlock(newBlock: BlockBase): BlockBase;
     abstract getTransactionsByWalletAdress(walletAdress: string): Array<TransactionSignBase>;
+    abstract getOutBlockCoinNumber(): number;
     abstract getCoinNumberyByWalletAdress(walletAdress: string): number;
     abstract getMiningCoinNumberyByWalletAdress(
         walletAdress: string

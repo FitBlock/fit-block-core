@@ -78,6 +78,7 @@ export default class Block extends BlockBase {
     getNextBlockValPowValue(nextBlock:Block):bigint {
         let powValue = 0n;
         if(this.blockVal===nextBlock.blockVal) {return powValue;}
+        if(this.height+1 !== nextBlock.height) {return powValue;}
         const blockHashVerify =  this.getNextBlockHashVerify(nextBlock);
         for(let i=0;i<blockHashVerify.nextVerify.length;i++) {
             if(blockHashVerify.nextVerify[i]!=blockHashVerify.originVerify[i]) {
@@ -168,10 +169,15 @@ export default class Block extends BlockBase {
         }
         return transactions
     }
+
+    getOutBlockCoinNumber(): number {
+        return Math.floor(config.initOutBlockCoinNum/Math.ceil(this.height/config.HalfHeightCycle));
+    }
+
     getMiningCoinNumberyByWalletAdress(walletAdress: string): number {
         let coinNum = 0;
         if(walletAdress===this.workerAddress) {
-            coinNum+=Math.floor(config.initOutBlockCoinNum/Math.ceil(this.height/config.HalfHeightCycle));
+            coinNum+=this.getOutBlockCoinNumber();
             for(const transactionSign of this.transactionSigns) {
                 coinNum+=transactionSign.transaction.getTradingFees();
             }

@@ -28,6 +28,8 @@ export default abstract class AppBase{
         lastBlock:BlockBase,
         transactions:Array<TransactionSignBase>
     }>
+
+    abstract getOutBlockCoinNumber(nowBlock:BlockBase): number;
     abstract async getCoinNumberyByWalletAdress(
         walletAdress: string,
         startBlock:BlockBase
