@@ -144,9 +144,9 @@ export default class Store extends StoreBase {
         return costCoinNumber
     }
 
-    async checkIsTransactionSignInBlock(transactionSign:TransactionSign):Promise<boolean> {
+    async checkIsTransactionSignInBlock(transactionSign:TransactionSign,startBlock:Block=Block.getPreGodBlock()):Promise<boolean> {
         let isInBlock = false;
-        for await (const block of await this.blockIterator()) {
+        for await (const block of await this.blockIterator(startBlock)) {
             if(block.isTransactionSignIn(transactionSign)) {
                 isInBlock = true;
                 break;
