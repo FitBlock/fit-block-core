@@ -144,15 +144,17 @@ export default class Store extends StoreBase {
         return costCoinNumber
     }
 
-    async checkIsTransactionSignInBlock(transactionSign:TransactionSign,startBlock:Block=Block.getPreGodBlock()):Promise<boolean> {
-        let isInBlock = false;
+    async checkIsTransactionSignInBlock(transactionSign:TransactionSign,startBlock:Block=Block.getPreGodBlock()):Promise<string> {
+        let inBlockHash = '';
+        let nextBlockHash = startBlock.nextBlockHash;
         for await (const block of await this.blockIterator(startBlock)) {
             if(block.isTransactionSignIn(transactionSign)) {
-                isInBlock = true;
+                inBlockHash = nextBlockHash;
                 break;
             }
+            nextBlockHash = block.nextBlockHash
         }
-        return isInBlock
+        return inBlockHash
     }
 
     async delTransactionSignData(transactionSign:TransactionSign):Promise<boolean> {

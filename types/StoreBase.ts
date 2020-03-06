@@ -39,7 +39,7 @@ export default  abstract class StoreBase{
 
     abstract async getTransactionSignCostInMap(transactionSign:TransactionSignBase):Promise<number>;
 
-    abstract async checkIsTransactionSignInBlock(transactionSign:TransactionSignBase,startBlock:BlockBase):Promise<boolean>;
+    abstract async checkIsTransactionSignInBlock(transactionSign:TransactionSignBase,startBlock:BlockBase):Promise<string>;
 
     abstract async keepTransactionSignData(transactionSign:TransactionSignBase):Promise<boolean>;
 
