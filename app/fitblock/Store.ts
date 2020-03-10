@@ -80,7 +80,7 @@ export default class Store extends StoreBase {
 
     async blockIterator(startBlock:Block=Block.getInvalidBlock()): Promise<AsyncIterable<Block>> {
         let nowBlock;
-        if(startBlock.height===config.godBlockHeight-1) {
+        if(!startBlock.nextBlockHash) {
             nowBlock = await this.getBlockData(this.getPreGodBlock());
         } else {
             nowBlock = await this.getBlockData(startBlock);
