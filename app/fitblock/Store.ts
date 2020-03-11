@@ -2,6 +2,8 @@ import StoreBase from '../../types/StoreBase';
 import Block from './Block';
 import config from './config';
 import TransactionSign from './TransactionSign';
+import {getLoggerInstance} from './Logger'
+const logger = getLoggerInstance().getLogger()
 export const getStoreInstance = ( ()=> {
     let instance = null;
     return (dbClient:any,tmpVersion:string=''):Store=>{
@@ -35,7 +37,7 @@ export default class Store extends StoreBase {
         try {
             return await this.get(config.blockVersionKey)
         } catch(err) {
-            console.warn(err)
+            logger.warn(err)
         }
         const version = this.genVersion()
         await this.setVersion(version)
