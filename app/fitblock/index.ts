@@ -8,6 +8,8 @@ import {getStoreInstance} from './Store'
 import Store from './Store'
 import Wallet from './Wallet'
 import CoinWorker from './CoinWorker'
+import {getLoggerInstance} from './Logger'
+const logger = getLoggerInstance().getLogger()
 export default class FitBlock extends AppBase {
     name: string;
     dbClient: any;
@@ -190,5 +192,9 @@ export default class FitBlock extends AppBase {
             throw new Error(`nextBlock not pass verify`)
         }
         return nextblock;
+    }
+
+    getLogger() {
+        return logger;
     }
 }

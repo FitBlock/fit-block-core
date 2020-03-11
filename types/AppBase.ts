@@ -51,5 +51,7 @@ export default abstract class AppBase{
         preBlock:BlockBase, miningAddress:string, 
         transactionSignList:Array<TransactionSignBase>,
         miningAop:(nextBlock: BlockBase, isComplete:boolean)=>Promise<boolean>,
-        startBigInt:bigint): Promise<BlockBase>;
+        startBigInt:bigint
+    ): Promise<BlockBase>;
+    abstract getLogger():any;
 } 
