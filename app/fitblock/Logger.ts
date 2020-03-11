@@ -1,4 +1,3 @@
-import {getLogger}  from 'log4js'
 export const getLoggerInstance = ( ()=> {
     let instance = null;
     return ():Logger=>{
@@ -30,7 +29,16 @@ export default class Logger {
         if(isDev) {
             this.logger = console;
         } else {
-            this.logger = getLogger()
+            // 由于前后端都要使用所以不能引用带fs模块的日志系统，那就暂时先忽略吧
+            const ignoreFunc = ()=>{}
+            this.logger = {
+                log:ignoreFunc,
+                trace:ignoreFunc,
+                debug:ignoreFunc,
+                info:ignoreFunc,
+                warn:ignoreFunc,
+                error:ignoreFunc,
+            }
         }
     }
 
