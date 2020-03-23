@@ -62,7 +62,7 @@ export default class FitBlock extends AppBase {
         return await this.getStore().keepBlockData(preBlock, block)
     }
 
-    async loadLastBlockData(preBlock:Block = Block.getInvalidBlock()):Promise<Block> {
+    async loadLastBlockData(preBlock:Block = Block.getPreGodBlock()):Promise<Block> {
         return await this.getStore().getLastBlockData(preBlock);
     }
 
