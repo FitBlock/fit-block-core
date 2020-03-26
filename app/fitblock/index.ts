@@ -62,8 +62,8 @@ export default class FitBlock extends AppBase {
         return await this.getStore().keepBlockData(preBlock, block)
     }
 
-    async loadLastBlockData(preBlock:Block = Block.getPreGodBlock()):Promise<Block> {
-        return await this.getStore().getLastBlockData(preBlock);
+    async loadLastBlockData(invalidBlock:Block = Block.getInvalidBlock()):Promise<Block> {
+        return await this.getStore().getLastBlockData(invalidBlock);
     }
 
     genPrivateKeyByString(textData: string): string {

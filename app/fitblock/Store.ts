@@ -52,9 +52,9 @@ export default class Store extends StoreBase {
         return `#${version}#block:${preBlock.nextBlockHash}:${preBlock.timestamp}`;
     }
 
-    async getLastBlockData(preBlock:Block = Block.getInvalidBlock()):Promise<Block> {
-        let lastBlock = preBlock;  
-        for await (const block of await this.blockIterator(preBlock)) {
+    async getLastBlockData(invalidBlock:Block = Block.getInvalidBlock()):Promise<Block> {
+        let lastBlock = invalidBlock;  
+        for await (const block of await this.blockIterator(invalidBlock)) {
             lastBlock = block;
         }
         return lastBlock;
