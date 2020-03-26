@@ -2,6 +2,8 @@ import BlockBase from '../../types/BlockBase';
 import TransactionSign from './TransactionSign';
 import {createHash} from 'crypto';
 import config from './config'
+import {getLoggerInstance} from './Logger'
+const logger = getLoggerInstance().getLogger()
 export default class Block extends BlockBase {
     transactionSigns:Array<TransactionSign>;
     constructor (walletAdress, height) {
@@ -126,22 +128,58 @@ export default class Block extends BlockBase {
         return true;
     }
     verifyNextBlock(nextBlock:Block):boolean {
-        if(!this.verifyNextBlockHeight(nextBlock)){return false;}
-        if(!this.verifyTransactions(nextBlock)){return false;}
-        if(!this.verifyNextBlockHash(nextBlock)){return false;}
-        if(!this.verifyNextBlockNHardBit(nextBlock)){return false;}
-        if(!this.verifyNextBlockTimestamp(nextBlock)){return false;}
+        if(!this.verifyNextBlockHeight(nextBlock)){
+            logger.log(`Height verify failed!`)
+            return false;
+        }
+        if(!this.verifyTransactions(nextBlock)){
+            logger.log(`Transactions verify failed!`)
+            return false;
+        }
+        if(!this.verifyNextBlockHash(nextBlock)){
+            logger.log(`NextBlockHash verify failed!`)
+            return false;
+        }
+        if(!this.verifyNextBlockNHardBit(nextBlock)){
+            logger.log(`HardBit verify failed!`)
+            return false;
+        }
+        if(!this.verifyNextBlockTimestamp(nextBlock)){
+            logger.log(`Timestamp verify failed!`)
+            return false;
+        }
         return true;
     }
 
     verifyGodBlock(godBlock:Block):boolean {
-        if(godBlock.nHardBit !== config.minHardBit) {return false;}
-        if(godBlock.workerAddress !== config.godWalletAdress) {return false;}
-        if(godBlock.height !== config.godBlockHeight) {return false;}
-        if(godBlock.transactionSigns.length !== 0) {return false;}
-        if(godBlock.blockVal.length !== config.initBlockValLen) {return false;}
-        if(godBlock.nextBlockHash.length !== 64) {return false;}
-        if(godBlock.timestamp <= 1578000000000) {return false;}
+        if(godBlock.nHardBit !== config.minHardBit) {
+            logger.log(`minHardBit verify failed!`)
+            return false;
+        }
+        if(godBlock.workerAddress !== config.godWalletAdress) {
+            logger.log(`godWalletAdress verify failed!`)
+            return false;
+        }
+        if(godBlock.height !== config.godBlockHeight) {
+            logger.log(`godBlockHeight verify failed!`)
+            return false;
+        }
+        if(godBlock.transactionSigns.length !== 0) {
+            logger.log(`transactionSigns verify failed!`)
+            return false;
+        }
+        if(godBlock.blockVal.length !== config.initBlockValLen) {
+            logger.log(`initBlockValLen verify failed!`)
+            return false;
+        }
+        if(godBlock.nextBlockHash.length !== 64) {
+            logger.log(`nextBlockHash verify failed!`)
+            return false;
+        }
+        if(godBlock.timestamp <= 1578000000000) {
+            logger.log(`timestamp verify failed!`)
+            return false;
+        }
         return true;
     }
 
