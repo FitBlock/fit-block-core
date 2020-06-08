@@ -1,9 +1,6 @@
 name: fit-block-core Package
 
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
